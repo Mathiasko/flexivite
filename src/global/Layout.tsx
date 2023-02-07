@@ -30,12 +30,8 @@ function LayoutContent() {
 				<NavBar />
 				<Box
 					component="main"
-<<<<<<< Updated upstream
 					height={'100vh'}
 					width={'100vw'}
-=======
-					height={"100vh"}
->>>>>>> Stashed changes
 					sx={{
 						backgroundColor: (theme) => theme.palette.grey[100],
 					}}>
