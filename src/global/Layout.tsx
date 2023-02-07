@@ -27,11 +27,14 @@ function LayoutContent() {
 				<NavBar />
 				<Box
 					component="main"
-          height={'100vh'}
+					height={'100vh'}
+					width={'100vw'}
 					sx={{
 						backgroundColor: (theme) => theme.palette.grey[100],
 					}}>
-					<ToolBar />
+					<Box>
+						<ToolBar />
+					</Box>
 					<Box>
 						<RouteList />
 					</Box>
