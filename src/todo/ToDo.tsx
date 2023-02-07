@@ -6,9 +6,8 @@ import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Waiting } from "./Waiting";
 import { InProgress } from "./InProgress";
-import { Grid, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import { RepairCardDetails } from "./RepairCardDetails";
-import { margin } from "@mui/system";
 
 export const ToDo = () => {
 	const [value, setValue] = React.useState("1");
@@ -18,8 +17,8 @@ export const ToDo = () => {
 	};
 
 	return (
-		<Grid container columns={3}>
-			<Grid item xs={1} height={"93vh"} overflow="auto">
+		<Grid container columns={3} overflow={"auto"}>
+			<Grid item xs={1} overflow={"auto"}>
 				<TabContext value={value}>
 					<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
 						<TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -35,7 +34,7 @@ export const ToDo = () => {
 					</TabPanel>
 				</TabContext>
 			</Grid>
-			<Grid item padding={0} paddingTop={2} xs={2} padding={3}>
+			<Grid item paddingTop={2} paddingX={3} xs={2}>
 				<RepairCardDetails />
 			</Grid>
 		</Grid>
