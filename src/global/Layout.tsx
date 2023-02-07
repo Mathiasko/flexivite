@@ -5,6 +5,7 @@ import { RouteList } from "./RouteList";
 import { ThemeOptions } from "@mui/material";
 import { ToolBar } from "./ToolBar";
 import { NavBar } from "./NavBar";
+import ModalEl from "./ModalEl";
 
 const mdTheme: ThemeOptions = createTheme({
 	palette: {
@@ -15,6 +16,8 @@ const mdTheme: ThemeOptions = createTheme({
 		},
 		secondary: {
 			main: "#ffffff",
+			light: "#888822",
+			dark: "#2266ee",
 		},
 	},
 });
@@ -39,6 +42,7 @@ function LayoutContent() {
 						<RouteList />
 					</Box>
 				</Box>
+				<ModalEl />
 			</Box>
 		</ThemeProvider>
 	);

@@ -1,14 +1,18 @@
 import React from "react";
 import { Box, Button, Chip, Typography } from "@mui/material";
 
-export const RepairCard = () => {
+interface RepairCardInterface {
+	color?: boolean;
+}
+
+export const RepairCard = ({ color }: RepairCardInterface) => {
 	return (
 		<Box
 			padding={2}
 			borderRadius={2}
 			boxShadow={5}
 			sx={{
-				backgroundColor: "primary.main",
+				backgroundColor: color ? "secondary.dark" : "primary.main",
 				color: "white",
 				"&:hover": {
 					opacity: [0.9],
