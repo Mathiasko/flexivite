@@ -1,9 +1,7 @@
 import {
-	Avatar,
 	Checkbox,
 	List,
 	ListItem,
-	ListItemAvatar,
 	ListItemButton,
 	ListItemText,
 } from "@mui/material";

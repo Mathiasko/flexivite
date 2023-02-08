@@ -17,10 +17,18 @@ export const ToDo = () => {
 	};
 
 	return (
-		<Grid container columns={3} overflow={"auto"}>
-			<Grid item xs={1} overflow={"auto"}>
+		<Grid container columns={3} height={"90vh"}>
+			<Grid item xs={1} height={"100%"} overflow={"auto"}>
 				<TabContext value={value}>
-					<Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+					<Box
+						sx={{
+							borderBottom: 1,
+							borderColor: "divider",
+							backgroundColor: "#F5F5F5",
+							position: "sticky",
+							top: "0",
+							zIndex: 10,
+						}}>
 						<TabList onChange={handleChange} aria-label="lab API tabs example">
 							<Tab label="Waiting For Repair" value="1" />
 							<Tab label="Repairs In Progress" value="2" />
