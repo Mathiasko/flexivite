@@ -37,15 +37,12 @@ const Fade = React.forwardRef<HTMLDivElement, FadeProps>(function Fade(props, re
 });
 
 const style = {
-	position: "absolute" as "absolute",
-	top: "50%",
-	left: "50%",
-	transform: "translate(-50%, -50%)",
 	bgcolor: "background.paper",
 	border: "1px solid #111",
 	borderRadius: "8px",
 	boxShadow: 24,
 	p: 3,
+	transform: "translate(-50%, -50%)",
 };
 
 export default function ModalEl() {
@@ -66,7 +63,9 @@ export default function ModalEl() {
 					timeout: 500,
 				}}>
 				<Fade in={open}>
-					<Box sx={style}>{modalContent}</Box>
+					<Box sx={style} position={"absolute"} left={"50%"} top={"50%"} minWidth={'80%'}>
+						{modalContent}
+					</Box>
 				</Fade>
 			</Modal>
 		</div>

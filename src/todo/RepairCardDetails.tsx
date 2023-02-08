@@ -6,10 +6,10 @@ export const RepairCardDetails = () => {
 	return (
 		<Container className="box-shadow" sx={{ backgroundColor: "#F5F5F5", borderRadius: "10px" }}>
 			<Typography variant="h5" paddingY={2}>
-				<strong>Repair No. </strong> RR74292
+				Repair No.: <strong>RR74292</strong>
 			</Typography>
-			<Grid container columns={3} columnSpacing={5} rowSpacing={6} paddingBottom={3}>
-				<Grid item xs={1}>
+			<Grid container columns={6} columnSpacing={5} rowSpacing={6} paddingBottom={3}>
+				<Grid item xs={2}>
 					<Typography>
 						Taken by: <strong> Ferko Jagoda</strong>
 					</Typography>
@@ -23,12 +23,12 @@ export const RepairCardDetails = () => {
 						Bicycle: <strong>Titan Speed, white</strong>
 					</Typography>
 				</Grid>
-				<Grid item xs={1}>
+				<Grid item xs={2}>
 					<Typography>
 						<strong>ETA: </strong>2h
 					</Typography>
 				</Grid>
-				<Grid item xs={1}>
+				<Grid item xs={2}>
 					<TextField
 						id="outlined-basic"
 						label="Comment"
@@ -40,7 +40,7 @@ export const RepairCardDetails = () => {
 						multiline
 					/>
 				</Grid>
-				<Grid item xs={1} sx={{ maxWidth: "100px" }}>
+				<Grid item xs={3} sx={{ maxWidth: "100px" }}>
 					<Box
 						className={"box-shadow_sm"}
 						sx={{ backgroundColor: "white" }}
@@ -50,23 +50,13 @@ export const RepairCardDetails = () => {
 						<CheckList />
 					</Box>
 				</Grid>
-				<Grid item xs={1} sx={{ maxWidth: "100px" }}>
+				<Grid item xs={3} >
 					<Box
 						className={"box-shadow_sm"}
 						sx={{ backgroundColor: "white" }}
 						padding={2}
 						borderRadius={2}>
 						<Typography marginBottom={2}>Parts:</Typography>
-						<CheckList />
-					</Box>
-				</Grid>
-				<Grid item xs={1} sx={{ maxWidth: "100px" }}>
-					<Box
-						className={"box-shadow_sm"}
-						sx={{ backgroundColor: "white" }}
-						padding={2}
-						borderRadius={2}>
-						<Typography marginBottom={2}>Extras:</Typography>
 						<CheckList />
 					</Box>
 				</Grid>

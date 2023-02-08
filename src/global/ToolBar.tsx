@@ -4,13 +4,7 @@ import { Box } from "@mui/system";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { useStore } from "../Store.js";
 import Repair from "../createNew/repair/Repair.js";
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 import { SearchBar } from "./SearchBar";
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 export const ToolBar = () => {
 	const toggleModal = useStore((state) => state.toggleModal);

@@ -1,32 +1,60 @@
-import { Box, Divider, List, ListItemButton, ListItemText } from "@mui/material";
-import { useState } from "react";
+import { useLazyQuery } from "@apollo/client";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { GET_BICYCLES } from "../../queries.js";
 import { useStore } from "../../Store.js";
-export const SelectBicycle = ({setNextDisabled}) => {
-	const [selectedIndex, setSelectedIndex] = useState(0);
+
+interface selectBicycleInterface {
+	setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
+	const [selectedIndex, setSelectedIndex] = useState(-1);
+	const selectedCustomer = useStore((state) => state.selectedCustomer);
+	const selectBicycle = useStore((state) => state.selectBicycle);
+
+	const [searchBicycle, { called, loading, data }] = useLazyQuery(GET_BICYCLES, {
+		variables: { customerId: selectedCustomer?.id },
+	});
+
+	useEffect(() => {
+		searchBicycle(selectedCustomer);
+	}, [selectedCustomer]);
 
 	const handleListItemClick = (index: number) => {
 		setSelectedIndex(index);
 		selectBicycle(index);
-    setNextDisabled(false)
+		setNextDisabled(false);
 	};
-	const list = ["abc", "def", "ghi"];
-
-	const selectBicycle = useStore((state) => state.selectBicycle);
 
 	return (
-		<Box sx={{ width: "100%" }}>
-			<List component="nav" aria-label="main mailbox folders">
-				{list.map((item, index) => (
-					<>
-						<ListItemButton
-							selected={selectedIndex === index}
-							onClick={() => handleListItemClick(index)}>
-							<ListItemText primary={item} />
-						</ListItemButton>
-						<Divider />
-					</>
-				))}
-			</List>
+		<Box>
+			<Typography variant="h5">Bicycle</Typography>
+			<Box height={"200px"} overflow={"auto"} m={0}>
+				<Table size="small">
+					<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
+						<TableRow>
+							<TableCell>Brand</TableCell>
+							<TableCell>Type</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{data
+							? data.bicyclesByCustomerId.map((c, index) => (
+									<TableRow
+										key={index}
+										hover
+										selected={selectedIndex === index}
+										sx={{ cursor: "pointer" }}
+										onClick={() => handleListItemClick(index, c)}>
+										<TableCell>{c.brand.value}</TableCell>
+										<TableCell>{c.type}</TableCell>
+									</TableRow>
+							  ))
+							: ""}
+					</TableBody>
+				</Table>
+			</Box>
 		</Box>
 	);
 };
