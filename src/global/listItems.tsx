@@ -19,7 +19,7 @@ export const mainListItems = (
 				<ListItemText primary="Home" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/todo">
 			<ListItemButton>
 				<ListItemIcon>
@@ -28,7 +28,7 @@ export const mainListItems = (
 				<ListItemText primary="ToDo" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/repairs">
 			<ListItemButton>
 				<ListItemIcon>
@@ -37,7 +37,7 @@ export const mainListItems = (
 				<ListItemText primary="Repairs" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/sales">
 			<ListItemButton>
 				<ListItemIcon>
@@ -46,7 +46,7 @@ export const mainListItems = (
 				<ListItemText primary="Sales" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/rentals">
 			<ListItemButton>
 				<ListItemIcon>
@@ -55,7 +55,7 @@ export const mainListItems = (
 				<ListItemText primary="Rentals" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/bicycles">
 			<ListItemButton>
 				<ListItemIcon>
@@ -64,7 +64,7 @@ export const mainListItems = (
 				<ListItemText primary="Bicycles" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/products">
 			<ListItemButton>
 				<ListItemIcon>
@@ -73,7 +73,7 @@ export const mainListItems = (
 				<ListItemText primary="Products" />
 			</ListItemButton>
 		</Link>
-    
+
 		<Link to="/customers">
 			<ListItemButton>
 				<ListItemIcon>
@@ -82,7 +82,16 @@ export const mainListItems = (
 				<ListItemText primary="Customers" />
 			</ListItemButton>
 		</Link>
-    
+
+		<Link to="/employees">
+			<ListItemButton>
+				<ListItemIcon>
+					<PeopleIcon />
+				</ListItemIcon>
+				<ListItemText primary="Employees" />
+			</ListItemButton>
+		</Link>
+
 		<Link to="/signin">
 			<ListItemButton>
 				<ListItemIcon>
