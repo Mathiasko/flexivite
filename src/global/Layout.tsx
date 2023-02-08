@@ -7,6 +7,7 @@ import { ToolBar } from "./ToolBar";
 import { NavBar } from "./NavBar";
 import ModalEl from "./ModalEl";
 
+
 const mdTheme: ThemeOptions = createTheme({
 	palette: {
 		primary: {
@@ -30,12 +31,8 @@ function LayoutContent() {
 				<NavBar />
 				<Box
 					component="main"
-<<<<<<< Updated upstream
 					height={'100vh'}
 					width={'100vw'}
-=======
-					height={"100vh"}
->>>>>>> Stashed changes
 					sx={{
 						backgroundColor: (theme) => theme.palette.grey[100],
 					}}>
