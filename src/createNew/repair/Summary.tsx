@@ -34,7 +34,7 @@ export const Summary = () => {
 								{taskCart.map((task) => (
 									<TableRow key={task.id}>
 										<TableCell>{task.name}</TableCell>
-										<TableCell>{task.category.name}</TableCell>
+										<TableCell>{task.taskCategory.name}</TableCell>
 										<TableCell>{task.duration}</TableCell>
 									</TableRow>
 								))}

@@ -17,32 +17,29 @@ export const TaskCart = () => {
 	};
 
 	return (
-		<Box>
-			<Typography variant="h5">Tasks</Typography>
-			<Box height={"200px"} overflow={"auto"} m={1}>
-				<Table size="small">
-					<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
-						<TableRow>
-							<TableCell>Name</TableCell>
-							<TableCell>Category</TableCell>
-							<TableCell>Duration</TableCell>
+		<Box boxShadow={3} borderRadius={2} height={"200px"} overflow={"auto"} m={1}>
+			<Table size="small">
+				<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
+					<TableRow>
+						<TableCell>Name</TableCell>
+						<TableCell>Category</TableCell>
+						<TableCell>Duration</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{taskCart.map((task) => (
+						<TableRow
+							key={task.id}
+							hover
+							sx={{ cursor: "pointer" }}
+							onClick={() => handleClick(task)}>
+							<TableCell>{task.name}</TableCell>
+							<TableCell>{task.taskCategory.name}</TableCell>
+							<TableCell>{task.duration}</TableCell>
 						</TableRow>
-					</TableHead>
-					<TableBody>
-						{taskCart.map((task) => (
-							<TableRow
-								key={task.id}
-								hover
-								sx={{ cursor: "pointer" }}
-								onClick={() => handleClick(task)}>
-								<TableCell>{task.name}</TableCell>
-								<TableCell>{task.category.name}</TableCell>
-								<TableCell>{task.duration}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</Box>
+					))}
+				</TableBody>
+			</Table>
 		</Box>
 	);
 };

@@ -29,13 +29,14 @@ export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
 
 	return (
 		<Box>
-			<Typography variant="h5">Bicycle</Typography>
+			<Typography variant="h5" m={2}>Select Bicycle</Typography>
 			<Box height={"200px"} overflow={"auto"} m={0}>
 				<Table size="small">
 					<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
 						<TableRow>
 							<TableCell>Brand</TableCell>
 							<TableCell>Type</TableCell>
+							<TableCell>Color</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -49,6 +50,7 @@ export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
 										onClick={() => handleListItemClick(index, c)}>
 										<TableCell>{c.brand.value}</TableCell>
 										<TableCell>{c.type}</TableCell>
+										<TableCell>{c.color.value}</TableCell>
 									</TableRow>
 							  ))
 							: ""}

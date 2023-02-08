@@ -24,7 +24,7 @@ const store = (set) => ({
 			modal: !state.modal,
 		}));
 	},
-  setModalContent: (content) =>set(()=>({modalContent: content})),
+	setModalContent: (content) => set(() => ({ modalContent: content })),
 	emptyStore: () =>
 		set((state) => ({
 			...state,
@@ -135,7 +135,6 @@ const store = (set) => ({
 	},
 	removeRentalFromCart: (id) =>
 		set(({ rentalCart }) => {
-			console.log(id);
 			return {
 				rentalCart: rentalCart.filter((rental) => {
 					return rental.id !== id;
