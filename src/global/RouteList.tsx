@@ -6,6 +6,7 @@ import { Rentals } from "../rentals/Rentals";
 import { Bicycles } from "../bicycles/Bicycles";
 import { Products } from "../products/Products";
 import { Customers } from "../customers/Customers";
+import { Employees } from "../employees/Employees";
 import { Repairs } from "../reapirs/Repairs";
 import { Sales } from "../sales/Sales";
 
@@ -20,6 +21,7 @@ export const RouteList = () => {
 			<Route path="/bicycles" element={<Bicycles />}></Route>
 			<Route path="/products" element={<Products />}></Route>
 			<Route path="/customers" element={<Customers />}></Route>
+			<Route path="/employees" element={<Employees />}></Route>
 			<Route path="/signin" element={<SignIn />}></Route>
 		</Routes>
 	);

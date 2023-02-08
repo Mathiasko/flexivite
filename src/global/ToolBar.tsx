@@ -18,7 +18,7 @@ export const ToolBar = () => {
 			alignItems={"center"}
 			justifyContent={"space-between"}>
 			<Typography variant="h3" margin={1}>
-				To-Do
+				Title
 			</Typography>
 			<SearchBar />
 			<Box>

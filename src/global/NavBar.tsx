@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import styled from "@emotion/styled";
 import { mainListItems, secondaryListItems } from "./listItems";
-import { ThemeOptions } from "@mui/material";
+import { Box, ThemeOptions, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 const drawerWidth: number = 240;
@@ -51,9 +51,17 @@ export const NavBar = () => {
 				sx={{
 					display: "flex",
 					alignItems: "center",
-					justifyContent: "flex-end",
+					justifyContent: "space-between",
 					px: [1],
 				}}>
+				<Typography
+					variant="h6"
+					noWrap
+					component="div"
+					sx={{ display: { sm: 'none', md: 'block' } }}
+				>
+					FlexiFix
+				</Typography>
 				<IconButton onClick={toggleDrawer}>
 					<ChevronLeftIcon />
 				</IconButton>
@@ -61,7 +69,7 @@ export const NavBar = () => {
 			<List component="nav">
 				{mainListItems}
 				<Divider sx={{ my: 1 }} />
-				{secondaryListItems}
+
 			</List>
 		</Drawer>
 	);

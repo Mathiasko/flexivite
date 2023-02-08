@@ -212,7 +212,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Customers
+          Employees
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -232,7 +232,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 
-export const Customers = () => {
+export const Employees = () => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
@@ -369,90 +369,3 @@ export const Customers = () => {
     </Box>
   );
 }
-// import * as React from 'react';
-// import Link from '@mui/material/Link';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Button from '@mui/material/Button';
-// import IconButton from '@mui/material/IconButton';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import EditIcon from '@mui/icons-material/Edit';
-
-// // Generate Order Data
-// function createData(
-//   id: number,
-//   name: string,
-//   contact: string,
-//   email: string,
-// ) {
-//   return { id, name, contact, email};
-// }
-
-// const rows = [
-//   createData(
-//     0,
-//     '16 Mar, 2019',
-//     'Elvis Presley',
-//     'Tupelo, MS',
-//   ),
-//   createData(
-//     1,
-//     '16 Mar, 2019',
-//     'Paul McCartney',
-//     'London, UK',
-//   ),
-//   createData(
-//     2,
-//     '16 Mar, 2019',
-//     'Michael Jackson',
-//     'Gary, IN',
-//   ),
-//   createData(
-//     3,
-//     '15 Mar, 2019',
-//     'Bruce Springsteen',
-//     'Long Branch, NJ',
-//   ),
-// ];
-
-// function preventDefault(event: React.MouseEvent) {
-//   event.preventDefault();
-// }
-
-
-// export const Customers = () => {
-//     return (
-//       <React.Fragment>
-//         <Table size="small">
-//           <TableHead>
-//             <TableRow>
-//               <TableCell>Name</TableCell>
-//               <TableCell>Contact</TableCell>
-//               <TableCell>Email</TableCell>
-//               <TableCell>Edit/Delete</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {rows.map((row) => (
-//               <TableRow key={row.id}>
-//                 <TableCell>{row.name}</TableCell>
-//                 <TableCell>{row.contact}</TableCell>
-//                 <TableCell>{row.email}</TableCell>
-//                 <TableCell>
-//                   <IconButton aria-label="delete" size="small">
-//                     <DeleteIcon fontSize="inherit" />
-//                   </IconButton>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//         <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-//         See more orders
-//       </Link>
-//       </React.Fragment>
-//     );
-// }
