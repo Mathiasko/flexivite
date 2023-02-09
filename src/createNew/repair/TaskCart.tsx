@@ -1,16 +1,10 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { taskInterface } from "../../Interfaces.js";
 import { useStore } from "../../Store.js";
 
 export const TaskCart = () => {
-	interface taskInterface {
-		id: string;
-		name: string;
-		category: { id: string; name: string };
-		fkProductCategoryId: string;
-		duration: number;
-	}
 	const removeTaskFromCart = useStore((state) => state.removeTaskFromCart);
-	const taskCart = useStore((state) => state.taskCart);
+	const taskCart:taskInterface[] = useStore((state) => state.taskCart);
 
 	const handleClick = (item: taskInterface) => {
 		removeTaskFromCart(item);

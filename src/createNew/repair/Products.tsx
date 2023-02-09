@@ -5,25 +5,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useStore } from "../../Store.js";
 import { Box } from "@mui/system";
+import { nextInterface, productInterface } from "../../Interfaces.js";
 
-interface productInterface {
-	id: string;
-	productSupplier: { id: string; value: string; minOrder: number | null };
-	productBrand: { id: string; value: string };
-	productCategory: { id: string; value: string };
-	productGroup: { id: string; value: string };
-	name: string;
-	type: string;
-	ean: string;
-	stock: number;
-	minStock: number;
-	buyPrice: number;
-	sellPrice: number;
-	expectedDurability: number;
-}
-
-export function Products({ setNextDisabled }) {
-	const products = useStore((state) => state.products);
+export function Products({ setNextDisabled }: nextInterface) {
+	const products: productInterface[] = useStore((state) => state.products);
 
 	const handleClick = (item: productInterface) => {
 		setNextDisabled(false);

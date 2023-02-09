@@ -1,19 +1,31 @@
 import { useLazyQuery } from "@apollo/client";
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import {
+	Box,
+	IconButton,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
+import { nextInterface } from "../../Interfaces.js";
 import { GET_BICYCLES } from "../../queries.js";
 import { useStore } from "../../Store.js";
+import { bicycleInterface } from "../../Interfaces.js";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
 
-interface selectBicycleInterface {
-	setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
+export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
 	const [selectedIndex, setSelectedIndex] = useState(-1);
 	const selectedCustomer = useStore((state) => state.selectedCustomer);
 	const selectBicycle = useStore((state) => state.selectBicycle);
 
-	const [searchBicycle, { called, loading, data }] = useLazyQuery(GET_BICYCLES, {
+	interface bicyclesQuery {
+		bicyclesByCustomerId: bicycleInterface[];
+	}
+
+	const [searchBicycle, { data }] = useLazyQuery<bicyclesQuery>(GET_BICYCLES, {
 		variables: { customerId: selectedCustomer?.id },
 	});
 
@@ -29,7 +41,14 @@ export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
 
 	return (
 		<Box>
-			<Typography variant="h5" m={2}>Select Bicycle</Typography>
+			<Box display={"flex"} alignItems="center">
+				<Typography variant="h5" my={2}>
+					Select Bicycle
+				</Typography>
+				<IconButton sx={{ marginLeft: 1 }}>
+					<AddCircleOutlineRoundedIcon color="primary" fontSize="large" />
+				</IconButton>
+			</Box>
 			<Box height={"200px"} overflow={"auto"} m={0}>
 				<Table size="small">
 					<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
@@ -47,7 +66,7 @@ export const SelectBicycle = ({ setNextDisabled }: selectBicycleInterface) => {
 										hover
 										selected={selectedIndex === index}
 										sx={{ cursor: "pointer" }}
-										onClick={() => handleListItemClick(index, c)}>
+										onClick={() => handleListItemClick(index)}>
 										<TableCell>{c.brand.value}</TableCell>
 										<TableCell>{c.type}</TableCell>
 										<TableCell>{c.color.value}</TableCell>

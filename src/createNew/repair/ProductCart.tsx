@@ -1,25 +1,8 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { partInterface } from "../../Interfaces.js";
 import { useStore } from "../../Store.js";
 
 export const ProductCart = () => {
-	interface partInterface {
-		product: {
-			id: string;
-			productSupplier: { id: string; value: string; minOrder: number | null };
-			productBrand: { id: string; value: string };
-			productCategory: { id: string; value: string };
-			productGroup: { id: string; value: string };
-			name: string;
-			type: string;
-			ean: string;
-			stock: number;
-			minStock: number;
-			buyPrice: number;
-			sellPrice: number;
-			expectedDurability: number;
-		};
-		amount: number;
-	}
 	const removeProductFromCart = useStore((state) => state.removeProductFromCart);
 	const productCart: partInterface[] = useStore((state) => state.productCart);
 

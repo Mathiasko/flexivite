@@ -1,9 +1,12 @@
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { productInterface, taskInterface } from "../../Interfaces.js";
 import { useStore } from "../../Store.js";
 
 export const Summary = () => {
-	const taskCart = useStore((state) => state.taskCart);
-	const productCart = useStore((state) => state.productCart);
+	const taskCart: taskInterface[] = useStore((state) => state.taskCart);
+	const productCart: { product: productInterface; amount: number }[] = useStore(
+		(state) => state.productCart
+	);
 	return (
 		<Box>
 			<Box display={"flex"}>
@@ -42,7 +45,7 @@ export const Summary = () => {
 						</Table>
 					</Box>
 				</Box>
-        
+
 				<Box borderRadius={2} boxShadow={4} p={2} m={1}>
 					<Typography variant="h5">Products:</Typography>
 					<Box maxHeight={"200px"} overflow={"auto"} m={1}>

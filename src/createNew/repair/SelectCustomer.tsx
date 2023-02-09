@@ -1,12 +1,27 @@
 import { useLazyQuery } from "@apollo/client";
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
-import React, { useState } from "react";
+import {
+	Box,
+	IconButton,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	TextField,
+} from "@mui/material";
+import React, { useState, FC } from "react";
+import { CustomerInterface } from "../../Interfaces.js";
 import { GET_CUSTOMER } from "../../queries.js";
 import { useStore } from "../../Store.js";
+import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import { NewCustomerModal } from "../customer/NewCustomerModal.js";
+interface searchCustomerInterface {
+	setCustomers: React.Dispatch<React.SetStateAction<CustomerInterface[] | undefined>>;
+}
 
-const SearchCustoemer = ({ setCustomers }) => {
+const SearchCustoemer = ({ setCustomers }: searchCustomerInterface) => {
 	const [searchCustoemer, { called, loading, data }] = useLazyQuery(GET_CUSTOMER);
-
+	const [modal, setModal] = useState(false);
 	function handleChange({ value }: HTMLInputElement) {
 		searchCustoemer({ variables: { name: value } })
 			.then(({ data }) => {
@@ -17,28 +32,36 @@ const SearchCustoemer = ({ setCustomers }) => {
 			});
 	}
 	return (
-		<TextField
-			autoFocus
-			variant={"outlined"}
-			placeholder="Search for Customer"
-			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-				handleChange(e.target);
-			}}
-		/>
+		<Box display={"flex"} alignItems="center">
+			<TextField
+				variant={"outlined"}
+				placeholder="Search for Customer"
+				onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+					handleChange(e.target);
+				}}
+			/>
+			<IconButton
+				sx={{ marginLeft: 1 }}
+				onClick={() => {
+					setModal(true);
+				}}>
+				<AddCircleOutlineRoundedIcon color="primary" fontSize="large" />
+			</IconButton>
+			{modal ? <NewCustomerModal setModal={setModal} /> : ""}
+		</Box>
 	);
 };
 
-export const SelectCustomer = () => {
+export const SelectCustomer: FC = () => {
 	const [selectedIndex, setSelectedIndex] = useState(-1);
-	const [customers, setCustomers] = useState();
+	const [customers, setCustomers] = useState<CustomerInterface[]>();
 	const selectCustomer = useStore((state) => state.selectCustomer);
 	const selectedCustomer = useStore((state) => state.selectedCustomer);
 
-	const handleListItemClick = (index: number, item: string) => {
+	const handleListItemClick = (index: number, item: CustomerInterface) => {
 		setSelectedIndex(index);
 		selectCustomer(item);
 	};
-	console.log("customers", customers);
 
 	return (
 		<Box>
