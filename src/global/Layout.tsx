@@ -6,7 +6,6 @@ import { ToolBar } from "./ToolBar";
 import { NavBar } from "./NavBar";
 import ModalEl from "./ModalEl";
 
-
 const mdTheme: ThemeOptions = createTheme({
 	palette: {
 		primary: {
@@ -22,6 +21,7 @@ const mdTheme: ThemeOptions = createTheme({
 	},
 });
 
+
 function LayoutContent() {
 	return (
 		<ThemeProvider theme={mdTheme}>
@@ -34,9 +34,7 @@ function LayoutContent() {
 					sx={{
 						backgroundColor: (theme) => theme.palette.grey[100],
 					}}>
-					<Box>
-						<ToolBar />
-					</Box>
+					<ToolBar />
 					<Box>
 						<RouteList />
 					</Box>

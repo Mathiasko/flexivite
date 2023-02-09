@@ -5,10 +5,15 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { useStore } from "../Store.js";
 import Repair from "../createNew/repair/Repair.js";
 import { SearchBar } from "./SearchBar";
+import { useLocation } from 'react-router-dom'
+
 
 export const ToolBar = () => {
 	const toggleModal = useStore((state) => state.toggleModal);
 	const setModalContent = useStore((state) => state.setModalContent);
+	const location = useLocation();
+	// console.log(location.pathname);
+	const title = location.pathname;
 
 	return (
 		<Box
@@ -18,7 +23,7 @@ export const ToolBar = () => {
 			alignItems={"center"}
 			justifyContent={"space-between"}>
 			<Typography variant="h3" margin={1}>
-				Title
+				{title.slice(1).toUpperCase()}
 			</Typography>
 			<SearchBar />
 			<Box>
