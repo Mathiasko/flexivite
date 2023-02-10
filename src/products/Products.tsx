@@ -17,6 +17,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useQuery } from "@apollo/client";
+import { GET_ALL_PRODUCTS } from "../queries.js";
 import { visuallyHidden } from '@mui/utils';
 
 interface Data {
@@ -29,47 +31,6 @@ interface Data {
   inventory: number;
   price: number;
 }
-
-function createData(
-  id: number,
-  name: string,
-  category: string,
-  type: string,
-  brand: string,
-  supplier: string,
-  inventory: number,
-  price: number,
-): Data {
-  return {
-    id,
-    name,
-    category,
-    type,
-    brand,
-    supplier,
-    inventory,
-    price,
-  };
-}
-
-const rows = [
-  createData(1, 'Vinegar - Raspberry', 'Termite Control', 'Female', 'Goodys', 'Treutel and Sons', 1, 96),
-  createData(2, 'Pasta - Angel Hair', 'Soft Flooring and Base', 'Female', 'Prosacea', 'Stanton and Sons', 2, 93),
-  createData(3, 'Wine - Merlot Vina Carmen', 'Framing (Steel)', 'Female', 'Cefazolin', 'Muller-Barton', 3, 95),
-  createData(4, 'Waffle Stix', 'Wall Protection', 'Female', 'simply right famotidine', 'Davis, Hessel and Streich', 4, 92),
-  createData(5, 'Artichoke - Bottom, Canned', 'Prefabricated Aluminum Metal Canopies', 'Male', 'Vivelle-Dot', 'Block Inc', 5, 92),
-  createData(6, 'Soup - Campbells, Chix Gumbo', 'Electrical', 'Female', 'Hemorrhoids Bruises', 'Gutmann and Sons', 6, 93),
-  createData(7, 'Snapple Raspberry Tea', 'Structural and Misc Steel (Fabrication)', 'Male', 'Leader Anti-Itch', 'Wuckert-Berge', 7, 90),
-  createData(8, 'Wine - Penfolds Koonuga Hill', 'Framing (Steel)', 'Male', 'Temazepam', 'Schinner, Pacocha and Hyatt', 8, 91),
-  createData(9, 'Vinegar - Raspberry', 'Termite Control', 'Female', 'Goodys', 'Treutel and Sons', 1, 96),
-  createData(10, 'Pasta - Angel Hair', 'Soft Flooring and Base', 'Female', 'Prosacea', 'Stanton and Sons', 2, 93),
-  createData(11, 'Wine - Merlot Vina Carmen', 'Framing (Steel)', 'Female', 'Cefazolin', 'Muller-Barton', 3, 95),
-  createData(12, 'Waffle Stix', 'Wall Protection', 'Female', 'simply right famotidine', 'Davis, Hessel and Streich', 4, 92),
-  createData(13, 'Artichoke - Bottom, Canned', 'Prefabricated Aluminum Metal Canopies', 'Male', 'Vivelle-Dot', 'Block Inc', 5, 92),
-  createData(14, 'Soup - Campbells, Chix Gumbo', 'Electrical', 'Female', 'Hemorrhoids Bruises', 'Gutmann and Sons', 6, 93),
-  createData(15, 'Snapple Raspberry Tea', 'Structural and Misc Steel (Fabrication)', 'Male', 'Leader Anti-Itch', 'Wuckert-Berge', 7, 90),
-  createData(16, 'Wine - Penfolds Koonuga Hill', 'Framing (Steel)', 'Male', 'Temazepam', 'Schinner, Pacocha and Hyatt', 8, 91),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -96,6 +57,9 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -251,7 +215,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Products
+          All Products
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -277,6 +241,10 @@ export const Products = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { data: products } = useQuery(GET_ALL_PRODUCTS);
+  const productsLength = products?.products?.length;
+  console.log('products', products?.products);
+  console.log('productslength', productsLength);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -289,7 +257,7 @@ export const Products = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = products.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -329,7 +297,7 @@ export const Products = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - productsLength) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -346,23 +314,23 @@ export const Products = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={productsLength}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(products?.products, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
+                .map((product, index) => {
+                  const isItemSelected = isSelected(product.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, product.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={product.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -380,14 +348,14 @@ export const Products = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {product.name}
                       </TableCell>
-                      <TableCell align="right">{row.category}</TableCell>
-                      <TableCell align="right">{row.type}</TableCell>
-                      <TableCell align="right">{row.brand}</TableCell>
-                      <TableCell align="right">{row.supplier}</TableCell>
-                      <TableCell align="right">{row.inventory}</TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
+                      <TableCell align="right">{product.productCategory.value}</TableCell>
+                      <TableCell align="right">{product.type}</TableCell>
+                      <TableCell align="right">{product.productBrand.value}</TableCell>
+                      <TableCell align="right">{product.productSupplier.value}</TableCell>
+                      <TableCell align="right">{product.stock}</TableCell>
+                      <TableCell align="right">{product.sellPrice}</TableCell>
 
                     </TableRow>
                   );
@@ -403,7 +371,7 @@ export const Products = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={productsLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}

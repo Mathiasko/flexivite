@@ -30,39 +30,6 @@ interface Data {
   status: string;
 }
 
-// function createData(
-//   id: string,
-//   date: string,
-//   customer: string,
-//   bicycle: string,
-//   status: string,
-// ): Data {
-//   return {
-//     id,
-//     date,
-//     customer,
-//     bicycle,
-//     status,
-//   };
-// }
-
-
-// const rows = [
-//   createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-//   createData('R-20220222/2', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-//   createData('R-20220222/3', '22-07-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-//   createData('R-20220222/4', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-//   createData('R-20220222/5', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-//   createData('R-20220222/6', '15-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-//   createData('R-20220222/7', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-//   createData('R-20220222/8', '22-12-2023', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-//   createData('R-20220222/9', '22-02-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-//   createData('R-20220222/10', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-//   createData('R-20220222/11', '22-11-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-//   createData('R-20220222/12', '13-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-//   createData('R-20220222/13', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Done'),
-// ];
-
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -88,6 +55,9 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -230,7 +200,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Repairs
+          All Repairs
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -262,135 +232,138 @@ export const Repairs = () => {
   console.log("repairs", repairs?.repairs);
   console.log("repairsLEngth", repairs?.repairs?.length)
 
-  // const handleRequestSort = (
-  //   event: React.MouseEvent<unknown>,
-  //   property: keyof Data,
-  // ) => {
-  //   const isAsc = orderBy === property && order === 'asc';
-  //   setOrder(isAsc ? 'desc' : 'asc');
-  //   setOrderBy(property);
-  // };
+  const handleRequestSort = (
+    event: React.MouseEvent<unknown>,
+    property: keyof Data,
+  ) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
 
-  // const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   if (event.target.checked) {
-  //     const newSelected = repairs.map((n) => n.id);
-  //     setSelected(newSelected);
-  //     return;
-  //   }
-  //   setSelected([]);
-  // };
+  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.checked) {
+      const newSelected = repairs && Array.isArray(repairs) ? repairs.map((n) => n.id) : [];
+      setSelected(newSelected);
+      return;
+    }
+    setSelected([]);
+  };
 
-  // const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
-  //   const selectedIndex = selected.indexOf(id);
-  //   let newSelected: readonly string[] = [];
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
 
-  //   if (selectedIndex === -1) {
-  //     newSelected = newSelected.concat(selected, id);
-  //   } else if (selectedIndex === 0) {
-  //     newSelected = newSelected.concat(selected.slice(1));
-  //   } else if (selectedIndex === selected.length - 1) {
-  //     newSelected = newSelected.concat(selected.slice(0, -1));
-  //   } else if (selectedIndex > 0) {
-  //     newSelected = newSelected.concat(
-  //       selected.slice(0, selectedIndex),
-  //       selected.slice(selectedIndex + 1),
-  //     );
-  //   }
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, id);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+    setSelected(newSelected);
+  };
 
-  //   setSelected(newSelected);
-  // };
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
-  // const handleChangePage = (event: unknown, newPage: number) => {
-  //   setPage(newPage);
-  // };
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
-  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setRowsPerPage(parseInt(event.target.value, 10));
-  //   setPage(0);
-  // };
-
-  // const isSelected = (id: string) => selected.indexOf(id) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // // Avoid a layout jump when reaching the last page with empty rows.
-  // const emptyRows =
-  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - repairsLength) : 0;
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - repairsLength) : 0;
+  console.log("emptyRows", emptyRows)
 
-  // return (
-  //   <Box sx={{ width: '100%' }}>
-  //     <Paper sx={{ width: '100%', mb: 2 }}>
-  //       <EnhancedTableToolbar numSelected={selected.length} />
-  //       <TableContainer>
-  //         <Table
-  //           sx={{ minWidth: 750 }}
-  //           aria-labelledby="tableTitle"
-  //         >
-  //           <EnhancedTableHead
-  //             numSelected={selected.length}
-  //             order={order}
-  //             orderBy={orderBy}
-  //             onSelectAllClick={handleSelectAllClick}
-  //             onRequestSort={handleRequestSort}
-  //             rowCount={repairsLength}
-  //           />
-  //           <TableBody>
-  //             {stableSort(repairs?.repairs, getComparator(order, orderBy))
-  //               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-  //               .map((repair, index) => {
-  //                 const isItemSelected = isSelected(repair.id);
-  //                 const labelId = `enhanced-table-checkbox-${index}`;
+  return (
+    <Box sx={{ width: '100%' }}>
+      <Paper sx={{ width: '100%', mb: 2 }}>
+        <EnhancedTableToolbar numSelected={selected.length} />
+        <TableContainer>
+          <Table
+            sx={{ minWidth: 750 }}
+            aria-labelledby="tableTitle"
+          >
+            <EnhancedTableHead
+              numSelected={selected.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={repairsLength}
+            />
+            <TableBody>
+              {stableSort(repairs?.repairs, getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((repair, index) => {
+                  const isItemSelected = isSelected(repair.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-  //                 return (
-  //                   <TableRow
-  //                     hover
-  //                     onClick={(event) => handleClick(event, repair.id)}
-  //                     role="checkbox"
-  //                     aria-checked={isItemSelected}
-  //                     tabIndex={-1}
-  //                     key={index}
-  //                     selected={isItemSelected}
-  //                   >
-  //                     <TableCell padding="checkbox">
-  //                       <Checkbox
-  //                         color="primary"
-  //                         // checked={isItemSelected}
-  //                         inputProps={{
-  //                           'aria-labelledby': labelId,
-  //                         }}
-  //                       />
-  //                     </TableCell>
-  //                     <TableCell
-  //                       component="th"
-  //                       id={labelId}
-  //                       scope="row"
-  //                       padding="none"
-  //                     >
-  //                       {repair.number}
-  //                     </TableCell>
-  //                     <TableCell align="right">{repair.date}</TableCell>
-  //                     <TableCell align="right">{repair.customer.fullName}</TableCell>
-  //                     <TableCell align="right">{repair.bicycle.brand.value}</TableCell>
-  //                     <TableCell align="right">{repair.status.value}</TableCell>
-  //                   </TableRow>
-  //                 );
-  //               })}
-  //             {emptyRows > 0 && (
-  //               <TableRow>
-  //                 <TableCell colSpan={6} />
-  //               </TableRow>
-  //             )}
-  //           </TableBody>
-  //         </Table>
-  //       </TableContainer>
-  //       <TablePagination
-  //         rowsPerPageOptions={[5, 10, 25]}
-  //         component="div"
-  //         count={repairsLength}
-  //         rowsPerPage={rowsPerPage}
-  //         page={page}
-  //         onPageChange={handleChangePage}
-  //         onRowsPerPageChange={handleChangeRowsPerPage}
-  //       />
-  //     </Paper>
-  //   </Box>
-  // );
+                  return (
+
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, repair?.id)}
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={index}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          // checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {repair.number}
+                      </TableCell>
+                      <TableCell align="right">{repair.date}</TableCell>
+                      <TableCell align="right">{repair.customer.fullName}</TableCell>
+                      <TableCell align="right">{repair.bicycle.brand.value}</TableCell>
+                      <TableCell align="right">{repair.status.value}</TableCell>
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={repairsLength}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
+    </Box>
+  );
 }
+
+
