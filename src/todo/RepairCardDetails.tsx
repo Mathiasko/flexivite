@@ -47,7 +47,7 @@ export const RepairCardDetails = () => {
 	}: repairInterface = useStore((state) => state?.selectedRepair);
 
 	const repairDone = status.id === "0c3abf0e-a548-445b-8323-e3f580d54a84" ? true : false;
-	const [paymentMethod, setPaymentMethod] = useState(0);
+	const [paymentMethod, setPaymentMethod] = useState(2);
 
 	return (
 		<Container className="box-shadow" sx={{ backgroundColor: "#F5F5F5", borderRadius: "10px" }}>

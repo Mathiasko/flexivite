@@ -8,6 +8,7 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
+	Tooltip,
 	Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -47,13 +48,17 @@ export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
 				<Typography variant="h5" my={2}>
 					Select Bicycle
 				</Typography>
-				<IconButton
-					sx={{ marginLeft: 1 }}
-					onClick={() => {
-						setModal(true);
-					}}>
-					<AddCircleOutlineRoundedIcon color="primary" fontSize="large" />
-				</IconButton>
+					<IconButton
+						disabled={!selectedCustomer}
+						sx={{ marginLeft: 1 }}
+						onClick={() => {
+							setModal(true);
+						}}>
+						<AddCircleOutlineRoundedIcon
+							color={selectedCustomer ? "primary" : "disabled"}
+							fontSize="large"
+						/>
+					</IconButton>
 				{modal ? <NewBicycleModal setModal={setModal} /> : ""}
 			</Box>
 			<Box height={"200px"} overflow={"auto"} m={0}>
