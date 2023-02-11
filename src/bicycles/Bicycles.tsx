@@ -18,58 +18,19 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { GET_ALL_BICYCLES } from '../queries';
+import { useQuery } from '@apollo/client';
+import { logMissingFieldErrors } from '@apollo/client/core/ObservableQuery';
 
 interface Data {
   id: number;
   name: string;
   category: string;
   type: string;
-  brand: string;
-  supplier: string;
-  inventory: number;
-  price: number;
+  frameNumber: string;
+  owner: string;
+  tires: number;
 }
-
-function createData(
-  id: number,
-  name: string,
-  category: string,
-  type: string,
-  brand: string,
-  supplier: string,
-  inventory: number,
-  price: number,
-): Data {
-  return {
-    id,
-    name,
-    category,
-    type,
-    brand,
-    supplier,
-    inventory,
-    price,
-  };
-}
-
-const rows = [
-  createData(1, 'Vinegar - Raspberry', 'Termite Control', 'Female', 'Goodys', 'Treutel and Sons', 1, 96),
-  createData(2, 'Pasta - Angel Hair', 'Soft Flooring and Base', 'Female', 'Prosacea', 'Stanton and Sons', 2, 93),
-  createData(3, 'Wine - Merlot Vina Carmen', 'Framing (Steel)', 'Female', 'Cefazolin', 'Muller-Barton', 3, 95),
-  createData(4, 'Waffle Stix', 'Wall Protection', 'Female', 'simply right famotidine', 'Davis, Hessel and Streich', 4, 92),
-  createData(5, 'Artichoke - Bottom, Canned', 'Prefabricated Aluminum Metal Canopies', 'Male', 'Vivelle-Dot', 'Block Inc', 5, 92),
-  createData(6, 'Soup - Campbells, Chix Gumbo', 'Electrical', 'Female', 'Hemorrhoids Bruises', 'Gutmann and Sons', 6, 93),
-  createData(7, 'Snapple Raspberry Tea', 'Structural and Misc Steel (Fabrication)', 'Male', 'Leader Anti-Itch', 'Wuckert-Berge', 7, 90),
-  createData(8, 'Wine - Penfolds Koonuga Hill', 'Framing (Steel)', 'Male', 'Temazepam', 'Schinner, Pacocha and Hyatt', 8, 91),
-  createData(9, 'Vinegar - Raspberry', 'Termite Control', 'Female', 'Goodys', 'Treutel and Sons', 1, 96),
-  createData(10, 'Pasta - Angel Hair', 'Soft Flooring and Base', 'Female', 'Prosacea', 'Stanton and Sons', 2, 93),
-  createData(11, 'Wine - Merlot Vina Carmen', 'Framing (Steel)', 'Female', 'Cefazolin', 'Muller-Barton', 3, 95),
-  createData(12, 'Waffle Stix', 'Wall Protection', 'Female', 'simply right famotidine', 'Davis, Hessel and Streich', 4, 92),
-  createData(13, 'Artichoke - Bottom, Canned', 'Prefabricated Aluminum Metal Canopies', 'Male', 'Vivelle-Dot', 'Block Inc', 5, 92),
-  createData(14, 'Soup - Campbells, Chix Gumbo', 'Electrical', 'Female', 'Hemorrhoids Bruises', 'Gutmann and Sons', 6, 93),
-  createData(15, 'Snapple Raspberry Tea', 'Structural and Misc Steel (Fabrication)', 'Male', 'Leader Anti-Itch', 'Wuckert-Berge', 7, 90),
-  createData(16, 'Wine - Penfolds Koonuga Hill', 'Framing (Steel)', 'Male', 'Temazepam', 'Schinner, Pacocha and Hyatt', 8, 91),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -96,6 +57,9 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -119,13 +83,13 @@ const headCells: readonly HeadCell[] = [
     id: 'name',
     numeric: false,
     disablePadding: true,
-    label: 'Product',
+    label: 'Bicycle',
   },
   {
-    id: 'category',
+    id: 'status',
     numeric: true,
     disablePadding: false,
-    label: 'Category',
+    label: 'Status',
   },
   {
     id: 'type',
@@ -134,28 +98,22 @@ const headCells: readonly HeadCell[] = [
     label: 'Type',
   },
   {
-    id: 'brand',
+    id: 'frameNumber',
     numeric: true,
     disablePadding: false,
-    label: 'Brand',
+    label: 'Frame Number',
   },
   {
-    id: 'supplier',
+    id: 'owner',
     numeric: true,
     disablePadding: false,
-    label: 'Supplier',
+    label: 'Owner',
   },
   {
-    id: 'inventory',
+    id: 'tires',
     numeric: true,
     disablePadding: false,
-    label: 'Inventory',
-  },
-  {
-    id: 'price',
-    numeric: true,
-    disablePadding: false,
-    label: 'Price (DKK)',
+    label: 'Tires',
   },
 
 ];
@@ -251,7 +209,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Bicycles
+          All Bicycles
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -277,6 +235,11 @@ export const Bicycles = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { data: bicycles } = useQuery(GET_ALL_BICYCLES);
+  const bicyclesLength = bicycles?.bicycles.length;
+  console.log("bicycles", bicycles);
+  console.log("bicyclesLength", bicyclesLength);
+
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -289,7 +252,7 @@ export const Bicycles = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = bicycles.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -329,7 +292,7 @@ export const Bicycles = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - bicyclesLength) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -346,23 +309,23 @@ export const Bicycles = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={bicyclesLength}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(bicycles?.bicycles, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
+                .map((bicycle, index) => {
+                  const isItemSelected = isSelected(bicycle.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.id)}
+                      onClick={(event) => handleClick(event, bicycle.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.id}
+                      key={bicycle.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -380,14 +343,13 @@ export const Bicycles = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {bicycle.brand.value + ", " + bicycle.color.value}
                       </TableCell>
-                      <TableCell align="right">{row.category}</TableCell>
-                      <TableCell align="right">{row.type}</TableCell>
-                      <TableCell align="right">{row.brand}</TableCell>
-                      <TableCell align="right">{row.supplier}</TableCell>
-                      <TableCell align="right">{row.inventory}</TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
+                      <TableCell align="right">{bicycle.status.value}</TableCell>
+                      <TableCell align="right">{bicycle.type}</TableCell>
+                      <TableCell align="right">{bicycle.frameNumber}</TableCell>
+                      <TableCell align="right">{bicycle.owner.fullName}</TableCell>
+                      <TableCell align="right">{bicycle.tires.value}</TableCell>
 
                     </TableRow>
                   );
@@ -403,7 +365,7 @@ export const Bicycles = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={bicyclesLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
