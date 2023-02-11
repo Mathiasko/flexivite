@@ -17,6 +17,8 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { GET_ALL_CUSTOMERS, GET_ALL_REPAIRS } from "../queries.js";
+import { useQuery } from "@apollo/client";
 import { visuallyHidden } from '@mui/utils';
 
 interface Data {
@@ -24,34 +26,6 @@ interface Data {
   contact: string;
   email: string;
 }
-
-function createData(
-  name: string,
-  contact: string,
-  email: string,
-): Data {
-  return {
-    name,
-    contact,
-    email,
-  };
-}
-
-const rows = [
-  createData('Angil Maric', '+81 759 404 5717', 'amaric0@constantcontact.com'),
-  createData('Cecilia Kauble', '+7 165 292 6722', 'ckauble1@a8.net'),
-  createData('Angelle Rowes', '+385 329 511 2072', 'arowes2@va.gov'),
-  createData('Archambault Muggach', '+63 993 279 2605', 'amuggach3@de.vu'),
-  createData('Diann Kleinhandler', '+63 780 455 0949', 'dkleinhandler4@infoseek.co.jp'),
-  createData('Chelsie Philbrook', '+353 674 999 1993', 'cphilbrook5@nifty.com'),
-  createData('Brenda Stellino', '+7 539 331 4262', 'bstellino6@statcounter.com'),
-  createData('Maitilde Brunet', '+7 371 986 2117', 'mbrunet7@acquirethisname.com'),
-  createData('Arly Crain', '+386 739 972 0105', 'acrain8@cargocollective.com'),
-  createData('Brien Gymblett', '+351 107 907 6805', 'bgymblett9@e-recht24.de'),
-  createData('Ives Holhouse', '+66 997 401 8458', 'iholhousea@ask.com'),
-  createData('Jolee Paladino', '+57 525 994 7831', 'jpaladinob@chronoengine.com'),
-  createData('Karly Niccolls', '+86 125 210 1138', 'kniccollsc@google.it'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -77,11 +51,10 @@ function getComparator<Key extends keyof any>(
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -92,7 +65,6 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
   });
   return stabilizedThis.map((el) => el[0]);
 }
-
 interface HeadCell {
   disablePadding: boolean;
   id: keyof Data;
@@ -212,7 +184,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Customers
+          All Customers
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -238,6 +210,11 @@ export const Customers = () => {
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { data: customers } = useQuery(GET_ALL_CUSTOMERS);
+  const customersLength = customers?.customers?.length;
+
+  console.log('customers', customers?.customers);
+  console.log('customerslength', customersLength);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -250,7 +227,7 @@ export const Customers = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = customers.map((n) => n.name);
       setSelected(newSelected);
       return;
     }
@@ -290,7 +267,7 @@ export const Customers = () => {
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - customersLength) : 0;
 
   return (
     <Box sx={{ width: '100%', height: '100%' }}>
@@ -307,23 +284,23 @@ export const Customers = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={customersLength}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(customers?.customers, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                .map((customer, index) => {
+                  const isItemSelected = isSelected(customer.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, customer.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={customer.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -341,10 +318,10 @@ export const Customers = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.name}
+                        {customer.firstName + " " + customer.lastName}
                       </TableCell>
-                      <TableCell align="right">{row.contact}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
+                      <TableCell align="right">{customer.phone}</TableCell>
+                      <TableCell align="right">{customer.email}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -359,7 +336,7 @@ export const Customers = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={customersLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -369,90 +346,3 @@ export const Customers = () => {
     </Box>
   );
 }
-// import * as React from 'react';
-// import Link from '@mui/material/Link';
-// import Table from '@mui/material/Table';
-// import TableBody from '@mui/material/TableBody';
-// import TableCell from '@mui/material/TableCell';
-// import TableHead from '@mui/material/TableHead';
-// import TableRow from '@mui/material/TableRow';
-// import Button from '@mui/material/Button';
-// import IconButton from '@mui/material/IconButton';
-// import DeleteIcon from '@mui/icons-material/Delete';
-// import EditIcon from '@mui/icons-material/Edit';
-
-// // Generate Order Data
-// function createData(
-//   id: number,
-//   name: string,
-//   contact: string,
-//   email: string,
-// ) {
-//   return { id, name, contact, email};
-// }
-
-// const rows = [
-//   createData(
-//     0,
-//     '16 Mar, 2019',
-//     'Elvis Presley',
-//     'Tupelo, MS',
-//   ),
-//   createData(
-//     1,
-//     '16 Mar, 2019',
-//     'Paul McCartney',
-//     'London, UK',
-//   ),
-//   createData(
-//     2,
-//     '16 Mar, 2019',
-//     'Michael Jackson',
-//     'Gary, IN',
-//   ),
-//   createData(
-//     3,
-//     '15 Mar, 2019',
-//     'Bruce Springsteen',
-//     'Long Branch, NJ',
-//   ),
-// ];
-
-// function preventDefault(event: React.MouseEvent) {
-//   event.preventDefault();
-// }
-
-
-// export const Customers = () => {
-//     return (
-//       <React.Fragment>
-//         <Table size="small">
-//           <TableHead>
-//             <TableRow>
-//               <TableCell>Name</TableCell>
-//               <TableCell>Contact</TableCell>
-//               <TableCell>Email</TableCell>
-//               <TableCell>Edit/Delete</TableCell>
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {rows.map((row) => (
-//               <TableRow key={row.id}>
-//                 <TableCell>{row.name}</TableCell>
-//                 <TableCell>{row.contact}</TableCell>
-//                 <TableCell>{row.email}</TableCell>
-//                 <TableCell>
-//                   <IconButton aria-label="delete" size="small">
-//                     <DeleteIcon fontSize="inherit" />
-//                   </IconButton>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//         <Link color="primary" href="#" onClick={preventDefault} sx={{ mt: 3 }}>
-//         See more orders
-//       </Link>
-//       </React.Fragment>
-//     );
-// }
