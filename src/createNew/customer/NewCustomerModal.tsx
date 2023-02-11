@@ -9,13 +9,13 @@ export function NewCustomerModal({ setModal }) {
 	const [open, setOpen] = useState(true);
 	const [customerForm, setCustomerForm] = useState({ firstName: "", lastName: "", email: "@" });
 	const [createCustomer, { data, loading, error }] = useMutation(NEW_CUSTOMER);
+  const selectCustomer = useStore((state) => state.selectCustomer);
 
 	const { firstName, lastName, email } = customerForm;
 
 	const handleClose = () => {
 		setModal(false);
 	};
-	const selectCustomer = useStore((state) => state.selectCustomer);
 
 	function handleCustomerSubmit() {
 		createCustomer({ variables: { firstName, lastName, email } })
@@ -46,7 +46,7 @@ export function NewCustomerModal({ setModal }) {
 		<Modal open={open} onClose={handleClose}>
 			<Box sx={{ ...style }}>
 				<Typography mb={1} variant="h4">
-					Create new customers
+					Create new customer
 				</Typography>
 				<form className="flex flex-col">
 					<TextField

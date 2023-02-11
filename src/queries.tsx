@@ -1083,6 +1083,14 @@ export const CHANGE_REPAIR_STATUS = gql`
 		}
 	}
 `;
+export const EDIT_REPAIR_COMMENT = gql`
+	mutation editRepairComment($id: String!, $comment: String!) {
+		editRepair(input: { id: $id, comment: $comment }) {
+			id
+			comment
+		}
+	}
+`;
 export const GET_REPAIR_STATUSES = gql`
 	query RepairStatuses {
 		repairStatuses {

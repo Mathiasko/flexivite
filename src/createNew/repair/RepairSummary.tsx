@@ -8,8 +8,10 @@ import {
 	TableCell,
 	TableHead,
 	TableRow,
+	TextField,
 	Typography,
 } from "@mui/material";
+import { useState } from "react";
 import {
 	bicycleInterface,
 	CustomerInterface,
@@ -19,7 +21,7 @@ import {
 import { ADD_PRODUCT_INVOICE_LINE, ADD_TASK_INVOICE_LINE, POST_NEW_REPAIR } from "../../queries.js";
 import { useStore } from "../../Store.js";
 
-export const Summary = () => {
+export const RepairSummary = () => {
 	const emptyStore: Function = useStore((state) => state.emptyStore);
 	const taskCart: taskInterface[] = useStore((state) => state.taskCart);
 	const productCart: { product: productInterface; amount: number }[] = useStore(
@@ -31,6 +33,7 @@ export const Summary = () => {
 	const [createRepair] = useMutation(POST_NEW_REPAIR);
 	const [createTaskInvoiceLine] = useMutation(ADD_TASK_INVOICE_LINE);
 	const [createProductInvoiceLine] = useMutation(ADD_PRODUCT_INVOICE_LINE);
+	const [comment, setComment] = useState("");
 
 	function postRepair() {
 		createRepair({
@@ -38,7 +41,7 @@ export const Summary = () => {
 				fkBicycleId: selectedBicycle.id,
 				fkCustomerId: selectedCustomer.id,
 				fkTakenBy: signedIn.id,
-				comment: "comment",
+				comment: comment,
 				status: "be9e0fb7-1277-45c9-8fd1-3f5b8071f0d3",
 			},
 		})
@@ -51,7 +54,7 @@ export const Summary = () => {
 							fkTask: task.id,
 							amount: 1,
 							time: task.duration,
-							price: 123,
+							price: task.duration * 200,
 						},
 					}).then(({ data }) => {
 						console.log("createTaskInvoiceLine", data);
@@ -63,7 +66,7 @@ export const Summary = () => {
 							fkRepairId: data.createRepair.id,
 							fkProductId: item.product.id,
 							amount: item.amount,
-							price: 1,
+							price: item.product.sellPrice * item.amount,
 						},
 					}).then(({ data }) => {
 						console.log("createProductInvoiceLine", data);
@@ -92,6 +95,16 @@ export const Summary = () => {
 					<Typography>{selectedBicycle.type}</Typography>
 					<Typography>{selectedBicycle.color.value}</Typography>
 				</Box>
+				<TextField
+					label="Comment"
+					placeholder="Ved uz nieco napis"
+					variant="outlined"
+					rows={4}
+          sx={{margin: '15px'}}
+					margin={"dense"}
+					multiline
+					onChange={({ target }) => setComment(target.value)}
+				/>
 			</Box>
 			<Box display={"flex"}>
 				<Box borderRadius={2} boxShadow={4} p={2} m={1}>

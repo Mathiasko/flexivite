@@ -84,7 +84,7 @@ export interface taskInterface {
 }
 
 export interface nextInterface {
-	setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>;
+	setNextDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface bicycleInterface {

@@ -1,10 +1,10 @@
 import { Grid } from "@mui/material";
-import { Products } from "./Products";
+import { Products } from "../common/Products";
 import { Tasks } from "./Tasks";
 import { TaskCart } from "./TaskCart";
-import { ProductCart } from "./ProductCart";
+import { ProductCart } from "../common/ProductCart";
 import { SearchTasks } from "./SearchTasks";
-import { SearchProducts } from "./SearchProducts";
+import { SearchProducts } from "../common/SearchProducts";
 
 interface selectTaskPartsInterface {
 	setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>;
