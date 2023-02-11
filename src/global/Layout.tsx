@@ -17,7 +17,7 @@ const mdTheme: ThemeOptions = createTheme({
 		secondary: {
 			main: "#ffffff",
 			light: "#888822",
-			dark: "#2266ee",
+			dark: "#5566cc",
 		},
 	},
 });

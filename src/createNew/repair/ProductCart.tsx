@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { partInterface } from "../../Interfaces.js";
 import { useStore } from "../../Store.js";

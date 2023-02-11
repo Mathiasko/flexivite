@@ -1,24 +1,96 @@
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
-import { productInterface, taskInterface } from "../../Interfaces.js";
+//@ts-nocheck
+import { useMutation } from "@apollo/client";
+import {
+	Box,
+	Button,
+	Table,
+	TableBody,
+	TableCell,
+	TableHead,
+	TableRow,
+	Typography,
+} from "@mui/material";
+import {
+	bicycleInterface,
+	CustomerInterface,
+	productInterface,
+	taskInterface,
+} from "../../Interfaces.js";
+import { ADD_PRODUCT_INVOICE_LINE, ADD_TASK_INVOICE_LINE, POST_NEW_REPAIR } from "../../queries.js";
 import { useStore } from "../../Store.js";
 
 export const Summary = () => {
+	const emptyStore: Function = useStore((state) => state.emptyStore);
 	const taskCart: taskInterface[] = useStore((state) => state.taskCart);
 	const productCart: { product: productInterface; amount: number }[] = useStore(
 		(state) => state.productCart
 	);
+	const signedIn = useStore((state) => state.signedIn);
+	const selectedCustomer: CustomerInterface = useStore((state) => state.selectedCustomer);
+	const selectedBicycle: bicycleInterface = useStore((state) => state.selectedBicycle);
+	const [createRepair] = useMutation(POST_NEW_REPAIR);
+	const [createTaskInvoiceLine] = useMutation(ADD_TASK_INVOICE_LINE);
+	const [createProductInvoiceLine] = useMutation(ADD_PRODUCT_INVOICE_LINE);
+
+	function postRepair() {
+		createRepair({
+			variables: {
+				fkBicycleId: selectedBicycle.id,
+				fkCustomerId: selectedCustomer.id,
+				fkTakenBy: signedIn.id,
+				comment: "comment",
+				status: "be9e0fb7-1277-45c9-8fd1-3f5b8071f0d3",
+			},
+		})
+			.then(({ data }) => {
+				console.log("createRepair", data);
+				taskCart?.map((task) => {
+					createTaskInvoiceLine({
+						variables: {
+							fkRepairId: data.createRepair.id,
+							fkTask: task.id,
+							amount: 1,
+							time: task.duration,
+							price: 123,
+						},
+					}).then(({ data }) => {
+						console.log("createTaskInvoiceLine", data);
+					});
+				});
+				productCart?.map((item) => {
+					createProductInvoiceLine({
+						variables: {
+							fkRepairId: data.createRepair.id,
+							fkProductId: item.product.id,
+							amount: item.amount,
+							price: 1,
+						},
+					}).then(({ data }) => {
+						console.log("createProductInvoiceLine", data);
+					});
+				});
+			})
+			.then(() => {
+				emptyStore();
+			})
+			.catch((err) => {
+				console.error(err);
+			});
+	}
+
 	return (
 		<Box>
 			<Box display={"flex"}>
 				<Box borderRadius={2} boxShadow={4} p={2} m={1}>
 					<Typography variant="h5">Customer:</Typography>
-					<Typography>Palko Prochazka</Typography>
-					<Typography>palko.prochazka@gmail.com</Typography>
+					<Typography>{selectedCustomer.fullName}</Typography>
+					<Typography>{selectedCustomer.email}</Typography>
 				</Box>
 				<Box borderRadius={2} boxShadow={4} p={2} m={1}>
 					<Typography variant="h5">Bicycle:</Typography>
-					<Typography>Popokatepetl</Typography>
-					<Typography>Red Dragon</Typography>
+					<Typography>{selectedBicycle.brand.value}</Typography>
+					<Typography>{selectedBicycle.type}</Typography>
+					<Typography>{selectedBicycle.color.value}</Typography>
 				</Box>
 			</Box>
 			<Box display={"flex"}>
@@ -78,6 +150,9 @@ export const Summary = () => {
 					</Box>
 				</Box>
 			</Box>
+			<Button variant="outlined" color="primary" onClick={() => postRepair()}>
+				Send it
+			</Button>
 		</Box>
 	);
 };

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from "react";
 import { Box, Button, CircularProgress, Modal, TextField, Typography } from "@mui/material";
 import { useMutation } from "@apollo/client";

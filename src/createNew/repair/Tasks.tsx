@@ -1,3 +1,4 @@
+//@ts-nocheck
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -19,7 +20,6 @@ export function Tasks({ setNextDisabled }: nextInterface) {
 		addTaskToCart(item);
 		searchProduct({ variables: { categoryId: item.fkProductCategoryId } })
 			.then(({ data }) => {
-				console.log("result.productsByCategory", data.productsByCategory);
 				storeProducts(data.productsByCategory);
 			})
 			.catch((err) => {

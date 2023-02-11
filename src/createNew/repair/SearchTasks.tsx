@@ -1,3 +1,4 @@
+//@ts-nocheck
 import React, { useState } from "react";
 import { useStore } from "../../Store.js";
 import { useLazyQuery } from "@apollo/client";

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
@@ -5,6 +6,7 @@ const store = (set) => ({
 	signedIn: { id: "30976797-115a-4ebb-9864-25412323ccf4", name: "Matus Laco" },
 	selectedBicycle: undefined,
 	selectedCustomer: undefined,
+	selectedRepair: undefined,
 	productCart: [],
 	bicycleCart: [],
 	taskCart: [],
@@ -35,6 +37,7 @@ const store = (set) => ({
 		})),
 	selectCustomer: (customer) => set((state) => ({ ...state, selectedCustomer: customer })),
 	selectBicycle: (bicycle) => set((state) => ({ ...state, selectedBicycle: bicycle })),
+	selectRepair: (repair) => set((state) => ({ ...state, selectedRepair: repair })),
 	addProductToCart: (product) =>
 		set(({ productCart }) => {
 			const productIndex = productCart.findIndex(

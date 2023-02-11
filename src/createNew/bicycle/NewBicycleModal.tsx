@@ -1,25 +1,53 @@
+//@ts-nocheck
 import React, { useState } from "react";
-import { Box, Button, CircularProgress, Modal, TextField, Typography } from "@mui/material";
-import { useMutation } from "@apollo/client";
-import { NEW_CUSTOMER } from "../../queries";
+import {
+	Autocomplete,
+	Box,
+	Button,
+	CircularProgress,
+	Modal,
+	TextField,
+	Typography,
+} from "@mui/material";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_BICYCLES, GET_BICYCLE_PROPS, NEW_BICYCLE } from "../../queries";
 import { useStore } from "../../Store.js";
 
-export function NewCustomerModal({ setModal }) {
+export function NewBicycleModal({ setModal }) {
 	const [open, setOpen] = useState(true);
-	const [customerForm, setCustomerForm] = useState({ firstName: "", lastName: "", email: "@" });
-	const [createCustomer, { data, loading, error }] = useMutation(NEW_CUSTOMER);
+	const [bicycleForm, setBicycleForm] = useState({});
+	const selectedCustomer = useStore((state: any) => state.selectedCustomer);
+	const storeBicycleProps = useStore((state: any) => state.storeBicycleProps);
+	const { data: bicycleProps } = useQuery(GET_BICYCLE_PROPS);
+	const [createBicycle, { data, loading }] = useMutation(NEW_BICYCLE, {
+		refetchQueries: [{ query: GET_BICYCLES, variables: { customerId: selectedCustomer?.id } }],
+	});
 
-	const { firstName, lastName, email } = customerForm;
+	const { color, frameNumber, type, brand, gearsystem, status, tires } = bicycleForm;
+
+	bicycleProps?.bicycleProps ? storeBicycleProps(bicycleProps.bicycleProps) : "";
 
 	const handleClose = () => {
 		setModal(false);
 	};
-	const selectCustomer = useStore((state) => state.selectCustomer);
+	const selectBicycle = useStore((state: any) => state.selectBicycle);
 
-	function handleCustomerSubmit() {
-		createCustomer({ variables: { firstName, lastName, email } })
-			.then(({data}) => {
-				selectCustomer(data.createEditCustomer)
+	function handleBicycleSubmit() {
+		createBicycle({
+			variables: {
+				color,
+				frameNumber,
+				type,
+				brand,
+				gearsystem,
+				status,
+				tires,
+				fkOwnerId: selectedCustomer.id,
+				fkHolderId: selectedCustomer.id,
+			},
+		})
+			.then(({ data }) => {
+				selectBicycle(data.createBicycle);
 			})
 			.catch((err) => {
 				console.error(err);
@@ -27,6 +55,27 @@ export function NewCustomerModal({ setModal }) {
 	}
 
 	data && !loading ? setModal(false) : "";
+
+	const colorOptions = bicycleProps?.bicycleProps.color.map((color) => ({
+		label: color.value,
+		id: color.id,
+	}));
+	const tiresOptions = bicycleProps?.bicycleProps.tires.map((tire) => ({
+		label: tire.value,
+		id: tire.id,
+	}));
+	const statusOptions = bicycleProps?.bicycleProps.status.map((status) => ({
+		label: status.value,
+		id: status.id,
+	}));
+	const gearsystemOptions = bicycleProps?.bicycleProps.gearsystem.map((gearsystem) => ({
+		label: gearsystem.value,
+		id: gearsystem.id,
+	}));
+	const brandOptions = bicycleProps?.bicycleProps.brand.map((brand) => ({
+		id: brand.id,
+		label: brand.value,
+	}));
 
 	const style = {
 		position: "absolute",
@@ -45,47 +94,87 @@ export function NewCustomerModal({ setModal }) {
 		<Modal open={open} onClose={handleClose}>
 			<Box sx={{ ...style }}>
 				<Typography mb={1} variant="h4">
-					Create new customers
+					Create new Bicycle
 				</Typography>
 				<form className="flex flex-col">
-					<TextField
-						sx={{ mb: 2 }}
-						autoFocus
-						variant={"outlined"}
-						label="First Name"
-						placeholder="First Name"
-						value={customerForm.firstName}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setCustomerForm({ ...customerForm, firstName: e.target.value });
+					<Autocomplete
+						disablePortal
+						options={brandOptions}
+						renderOption={(props, option) => {
+							return <Box {...props}>{option.label}</Box>;
 						}}
+						sx={{ width: 300, mb: 2 }}
+						onChange={(event: any, value: string | null) => {
+							setBicycleForm({ ...bicycleForm, brand: value.id });
+						}}
+						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Brand" />}
 					/>
 					<TextField
 						sx={{ mb: 2 }}
-						autoFocus
 						variant={"outlined"}
-						label="Last Name"
-						placeholder="Last Name"
-						value={customerForm.lastName}
+						label="Type"
+						placeholder="Type"
+						value={bicycleForm.type}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setCustomerForm({ ...customerForm, lastName: e.target.value });
+							setBicycleForm({ ...bicycleForm, type: e.target.value });
 						}}
 					/>
-					<TextField
-						sx={{ mb: 2 }}
-						autoFocus
-						variant={"outlined"}
-						label="Email"
-						placeholder="Email"
-						value={customerForm.email}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setCustomerForm({ ...customerForm, email: e.target.value });
+					<Autocomplete
+						disablePortal
+						options={colorOptions}
+						renderOption={(props, option) => {
+							return <Box {...props}>{option.label}</Box>;
 						}}
+						sx={{ width: 300, mb: 2 }}
+						onChange={(event: any, value: { id: string; label: string } | null) => {
+							setBicycleForm({ ...bicycleForm, color: value.id });
+						}}
+						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Color" />}
+					/>
+					<Autocomplete
+						disablePortal
+						options={tiresOptions}
+						renderOption={(props, option) => {
+							return <Box {...props}>{option.label}</Box>;
+						}}
+						sx={{ width: 300, mb: 2 }}
+						onChange={(event: any, value: string | null) => {
+							setBicycleForm({ ...bicycleForm, tires: value.id });
+						}}
+						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Tires" />}
+					/>
+					<Autocomplete
+						disablePortal
+						options={statusOptions}
+						renderOption={(props, option) => {
+							return <Box {...props}>{option.label}</Box>;
+						}}
+						sx={{ width: 300, mb: 2 }}
+						onChange={(event: any, value: string | null) => {
+							setBicycleForm({ ...bicycleForm, status: value.id });
+						}}
+						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Status" />}
+					/>
+					<Autocomplete
+						disablePortal
+						options={gearsystemOptions}
+						renderOption={(props, option) => {
+							return <Box {...props}>{option.label}</Box>;
+						}}
+						sx={{ width: 300, mb: 2 }}
+						onChange={(event: any, value: string | null) => {
+							setBicycleForm({ ...bicycleForm, gearsystem: value.id });
+						}}
+						renderInput={(props) => (
+							<TextField variant={"outlined"} {...props} label="Gearsystem" />
+						)}
 					/>
 					<Button
 						variant="outlined"
+						color="primary"
 						size="large"
 						onClick={() => {
-							handleCustomerSubmit();
+							handleBicycleSubmit();
 						}}>
 						Submit
 						{loading && (

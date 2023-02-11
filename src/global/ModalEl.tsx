@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";

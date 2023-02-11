@@ -2,127 +2,237 @@ import { gql } from "@apollo/client";
 
 export const GET_TODO = gql`
 	query RepairsInProgress {
-		repairsInProgress {
+		repairsDone {
 			id
 			number
-			bicycle {
-				id
-				type
-				color {
-					value
-				}
-				brand {
-					value
-				}
-			}
-			customer {
-				fullName
-			}
 			status {
 				value
 				id
 			}
+			bicycle {
+				id
+				type
+				name
+				color {
+					value
+					id
+				}
+				brand {
+					value
+					id
+				}
+				gearsystem {
+					id
+					value
+				}
+				tires {
+					id
+					value
+				}
+			}
+			customer {
+				id
+				fullName
+				email
+			}
 			takenBy {
+				id
 				name
 			}
 			technician {
+				id
 				name
 			}
 			taskInvoiceLines {
 				id
 				task {
-					name
-					duration
 					id
+					name
 					taskCategory {
+						id
 						name
 					}
+					duration
 				}
-				price
 				time
+				price
 			}
+			productInvoiceLines {
+				id
+				product {
+					id
+					productBrand {
+						id
+						value
+					}
+					productCategory {
+						id
+						value
+					}
+					name
+					type
+					ean
+					buyPrice
+				}
+				amount
+				price
+			}
+			dateStarted
+			dateFinished
+			comment
+			createdAt
+		}
+		repairsInProgress {
+			id
+			number
+			status {
+				value
+				id
+			}
+			bicycle {
+				id
+				type
+				name
+				color {
+					value
+					id
+				}
+				brand {
+					value
+					id
+				}
+				gearsystem {
+					id
+					value
+				}
+				tires {
+					id
+					value
+				}
+			}
+			customer {
+				id
+				fullName
+				email
+			}
+			takenBy {
+				id
+				name
+			}
+			technician {
+				id
+				name
+			}
+			taskInvoiceLines {
+				id
+				task {
+					id
+					name
+					taskCategory {
+						id
+						name
+					}
+					duration
+				}
+				time
+				price
+			}
+			productInvoiceLines {
+				id
+				product {
+					id
+					productBrand {
+						id
+						value
+					}
+					productCategory {
+						id
+						value
+					}
+					name
+					type
+					ean
+					buyPrice
+				}
+				amount
+				price
+			}
+			dateStarted
+			comment
 			createdAt
 		}
 		repairsToDo {
 			id
 			number
-			bicycle {
-				id
-				type
-				color {
-					value
-				}
-				brand {
-					value
-				}
-			}
-			customer {
-				fullName
-			}
 			status {
 				value
 				id
 			}
-			takenBy {
+			bicycle {
+				id
+				type
 				name
+				color {
+					value
+					id
+				}
+				brand {
+					value
+					id
+				}
+				gearsystem {
+					id
+					value
+				}
+				tires {
+					id
+					value
+				}
 			}
-			technician {
+			customer {
+				id
+				fullName
+				email
+			}
+			takenBy {
+				id
 				name
 			}
 			taskInvoiceLines {
 				id
 				task {
-					name
-					duration
 					id
+					name
 					taskCategory {
+						id
 						name
 					}
-				}
-				price
-				time
-			}
-			createdAt
-		}
-		repairsDone {
-			id
-			number
-			bicycle {
-				id
-				type
-				color {
-					value
-				}
-				brand {
-					value
-				}
-			}
-			customer {
-				fullName
-			}
-			status {
-				value
-				id
-			}
-			takenBy {
-				name
-			}
-			technician {
-				name
-			}
-			taskInvoiceLines {
-				id
-				task {
-					name
 					duration
-					id
-					taskCategory {
-						name
-					}
 				}
-				price
 				time
+				price
 			}
+			productInvoiceLines {
+				id
+				product {
+					id
+					productBrand {
+						id
+						value
+					}
+					productCategory {
+						id
+						value
+					}
+					name
+					type
+					ean
+					buyPrice
+				}
+				amount
+				price
+			}
+			comment
 			createdAt
 		}
 	}
@@ -287,7 +397,7 @@ export const GET_PRODUCT_INVOICE_LINES = gql`
 					id
 				}
 				name
-        type
+				type
 				sellPrice
 			}
 		}
@@ -446,7 +556,7 @@ export const ADD_PRODUCT_INVOICE_LINE = gql`
 					value
 				}
 				name
-        type
+				type
 				ean
 				sellPrice
 			}
@@ -493,8 +603,8 @@ export const GET_CUSTOMER = gql`
 export const NEW_BICYCLE = gql`
 	mutation CreateBicycle(
 		$color: String!
-		$frameNumber: String!
-		$type: String!
+		$frameNumber: String
+		$type: String
 		$brand: String!
 		$gearsystem: String!
 		$status: String!
@@ -641,7 +751,7 @@ export const CREATE_EDIT_PRODUCT = gql`
 				value
 			}
 			name
-      type
+			type
 			ean
 			stock
 			minStock
@@ -732,7 +842,7 @@ export const GET_PRODUCTS_BY_CATEGORY = gql`
 				value
 			}
 			name
-      type
+			type
 			stock
 			sellPrice
 		}
@@ -760,7 +870,7 @@ export const GET_PRODUCTS_BY_NAME = gql`
 				value
 			}
 			name
-      type
+			type
 			ean
 			stock
 			minStock
@@ -932,7 +1042,7 @@ export const GET_ALL_PRODUCTS = gql`
 				id
 			}
 			name
-      type
+			type
 			ean
 			stock
 			minStock
@@ -1094,7 +1204,7 @@ export const GET_ALL_SALES = gql`
 						value
 					}
 					name
-          type
+					type
 				}
 			}
 			salesperson {

@@ -13,6 +13,57 @@ export interface productInterface {
 	sellPrice: number;
 	expectedDurability: number;
 }
+
+interface propertyInterface {
+	id: string;
+	value: string;
+}
+
+interface technicianInterface {
+	id: string;
+	name: string;
+	role: number;
+}
+
+export interface productInvoiceLinesInterface {
+	id: string;
+	amount: number;
+	price: number;
+	product: productInterface;
+}
+export interface taskInvoiceLinesInterface {
+	id: string;
+	task: {
+		id: string;
+		name: string;
+		taskCategory: {
+			id: string;
+			name: string;
+		};
+		duration: number;
+	};
+	time: string;
+	price: number;
+}
+
+export interface repairInterface {
+	id: string;
+	number: string;
+	paymentMethod: { id: number; method: string };
+	bicycle: bicycleInterface;
+	customer: CustomerInterface;
+	status: propertyInterface;
+	productInvoiceLines: productInvoiceLinesInterface[];
+	taskInvoiceLines: taskInvoiceLinesInterface[];
+	takenBy?: technicianInterface;
+	technician?: technicianInterface;
+	dateStarted: string;
+	dateFinished: string;
+	dateReturned: string;
+	spareBicycle: bicycleInterface;
+	comment: string;
+	createdAt: string;
+}
 export interface partInterface {
 	product: productInterface;
 	amount: number;

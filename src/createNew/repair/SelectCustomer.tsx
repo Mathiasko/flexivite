@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useLazyQuery } from "@apollo/client";
 import {
 	Box,
@@ -20,7 +21,7 @@ interface searchCustomerInterface {
 }
 
 const SearchCustoemer = ({ setCustomers }: searchCustomerInterface) => {
-	const [searchCustoemer, { called, loading, data }] = useLazyQuery(GET_CUSTOMER);
+	const [searchCustoemer] = useLazyQuery(GET_CUSTOMER);
 	const [modal, setModal] = useState(false);
 	function handleChange({ value }: HTMLInputElement) {
 		searchCustoemer({ variables: { name: value } })

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { useLazyQuery } from "@apollo/client";
 import {
 	Box,
@@ -15,11 +16,13 @@ import { GET_BICYCLES } from "../../queries.js";
 import { useStore } from "../../Store.js";
 import { bicycleInterface } from "../../Interfaces.js";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
+import { NewBicycleModal } from "../bicycle/NewBicycleModal.js";
 
 export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
-	const [selectedIndex, setSelectedIndex] = useState(-1);
 	const selectedCustomer = useStore((state) => state.selectedCustomer);
+	const selectedBicycle = useStore((state) => state.selectedBicycle);
 	const selectBicycle = useStore((state) => state.selectBicycle);
+	const [modal, setModal] = useState(false);
 
 	interface bicyclesQuery {
 		bicyclesByCustomerId: bicycleInterface[];
@@ -34,7 +37,6 @@ export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
 	}, [selectedCustomer]);
 
 	const handleListItemClick = (index: number) => {
-		setSelectedIndex(index);
 		selectBicycle(index);
 		setNextDisabled(false);
 	};
@@ -45,9 +47,14 @@ export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
 				<Typography variant="h5" my={2}>
 					Select Bicycle
 				</Typography>
-				<IconButton sx={{ marginLeft: 1 }}>
+				<IconButton
+					sx={{ marginLeft: 1 }}
+					onClick={() => {
+						setModal(true);
+					}}>
 					<AddCircleOutlineRoundedIcon color="primary" fontSize="large" />
 				</IconButton>
+				{modal ? <NewBicycleModal setModal={setModal} /> : ""}
 			</Box>
 			<Box height={"200px"} overflow={"auto"} m={0}>
 				<Table size="small">
@@ -60,16 +67,16 @@ export const SelectBicycle = ({ setNextDisabled }: nextInterface) => {
 					</TableHead>
 					<TableBody>
 						{data
-							? data.bicyclesByCustomerId.map((c, index) => (
+							? data.bicyclesByCustomerId.map((bicycle) => (
 									<TableRow
-										key={index}
+										key={bicycle.id}
 										hover
-										selected={selectedIndex === index}
+										selected={selectedBicycle?.id === bicycle.id}
 										sx={{ cursor: "pointer" }}
-										onClick={() => handleListItemClick(index)}>
-										<TableCell>{c.brand.value}</TableCell>
-										<TableCell>{c.type}</TableCell>
-										<TableCell>{c.color.value}</TableCell>
+										onClick={() => handleListItemClick(bicycle)}>
+										<TableCell>{bicycle.brand.value}</TableCell>
+										<TableCell>{bicycle.type}</TableCell>
+										<TableCell>{bicycle.color.value}</TableCell>
 									</TableRow>
 							  ))
 							: ""}

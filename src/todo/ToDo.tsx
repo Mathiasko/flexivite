@@ -5,16 +5,34 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Waiting } from "./Waiting";
-import { InProgress } from "./InProgress";
 import { Grid } from "@mui/material";
 import { RepairCardDetails } from "./RepairCardDetails";
+import { useQuery } from "@apollo/client";
+import { GET_TODO } from "../queries";
+import { repairInterface } from "../Interfaces";
+import { useStore } from "../Store.js";
+import { InProgress } from "./InProgress";
+import { Done } from "./Done";
 
 export const ToDo = () => {
 	const [value, setValue] = React.useState("1");
+	const selectedRepair = useStore((state) => state?.selectedRepair);
 
 	const handleChange = (event: React.SyntheticEvent, newValue: string) => {
 		setValue(newValue);
 	};
+
+	interface todoInterface {
+		data:
+			| {
+					repairsInProgress: repairInterface[];
+					repairsDone: repairInterface[];
+					repairsToDo: repairInterface[];
+			  }
+			| undefined;
+	}
+
+	const { data }: todoInterface = useQuery(GET_TODO);
 
 	return (
 		<Grid container columns={3} height={"90vh"}>
@@ -31,19 +49,19 @@ export const ToDo = () => {
 						}}>
 						<TabList onChange={handleChange} aria-label="lab API tabs example">
 							<Tab label="Waiting For Repair" value="1" />
-							<Tab label="Repairs In Progress" value="2" />
+							<Tab label="In Progress" value="2" />
+							<Tab label="Done" value="3" />
 						</TabList>
 					</Box>
 					<TabPanel value="1">
-						<Waiting />
+						<Waiting waiting={data?.repairsToDo} />
 					</TabPanel>
-					<TabPanel value="2">
-						<InProgress />
-					</TabPanel>
+					<TabPanel value="2"><InProgress inProgress={data?.repairsInProgress} /></TabPanel>
+					<TabPanel value="3"><Done done={data?.repairsDone} /></TabPanel>
 				</TabContext>
 			</Grid>
 			<Grid item paddingTop={2} paddingX={3} xs={2}>
-				<RepairCardDetails />
+				{selectedRepair ? <RepairCardDetails /> : ""}
 			</Grid>
 		</Grid>
 	);
