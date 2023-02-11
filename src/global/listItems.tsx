@@ -4,9 +4,18 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListSubheader from "@mui/material/ListSubheader";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
+import HomeIcon from '@mui/icons-material/Home';
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import PeopleIcon from "@mui/icons-material/People";
+import BuildIcon from '@mui/icons-material/Build';
+import PersonIcon from '@mui/icons-material/Person';
+import PedalBikeIcon from '@mui/icons-material/PedalBike';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import LoginIcon from '@mui/icons-material/Login';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import LogoutIcon from '@mui/icons-material/Logout';
 import { Link } from "react-router-dom";
 
 export const mainListItems = (
@@ -14,7 +23,7 @@ export const mainListItems = (
 		<Link to="/">
 			<ListItemButton>
 				<ListItemIcon>
-					<DashboardIcon />
+					<HomeIcon />
 				</ListItemIcon>
 				<ListItemText primary="Home" />
 			</ListItemButton>
@@ -23,7 +32,7 @@ export const mainListItems = (
 		<Link to="/todo">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<ListAltIcon />
 				</ListItemIcon>
 				<ListItemText primary="ToDo" />
 			</ListItemButton>
@@ -32,7 +41,7 @@ export const mainListItems = (
 		<Link to="/repairs">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<BuildIcon />
 				</ListItemIcon>
 				<ListItemText primary="Repairs" />
 			</ListItemButton>
@@ -50,7 +59,7 @@ export const mainListItems = (
 		<Link to="/rentals">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<ConnectWithoutContactIcon />
 				</ListItemIcon>
 				<ListItemText primary="Rentals" />
 			</ListItemButton>
@@ -59,7 +68,7 @@ export const mainListItems = (
 		<Link to="/bicycles">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<PedalBikeIcon />
 				</ListItemIcon>
 				<ListItemText primary="Bicycles" />
 			</ListItemButton>
@@ -68,7 +77,7 @@ export const mainListItems = (
 		<Link to="/products">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<InventoryIcon />
 				</ListItemIcon>
 				<ListItemText primary="Products" />
 			</ListItemButton>
@@ -86,7 +95,7 @@ export const mainListItems = (
 		<Link to="/employees">
 			<ListItemButton>
 				<ListItemIcon>
-					<PeopleIcon />
+					<PersonIcon />
 				</ListItemIcon>
 				<ListItemText primary="Employees" />
 			</ListItemButton>
@@ -95,7 +104,7 @@ export const mainListItems = (
 		<Link to="/signin">
 			<ListItemButton>
 				<ListItemIcon>
-					<ShoppingCartIcon />
+					<LoginIcon />
 				</ListItemIcon>
 				<ListItemText primary="SignIn" />
 			</ListItemButton>
@@ -104,28 +113,28 @@ export const mainListItems = (
 	</React.Fragment>
 );
 
-export const secondaryListItems = (
-	<React.Fragment>
-		<ListSubheader component="div" inset>
-			Saved reports
-		</ListSubheader>
-		<ListItemButton>
-			<ListItemIcon>
-				<AssignmentIcon />
-			</ListItemIcon>
-			<ListItemText primary="Current month" />
-		</ListItemButton>
-		<ListItemButton>
-			<ListItemIcon>
-				<AssignmentIcon />
-			</ListItemIcon>
-			<ListItemText primary="Last quarter" />
-		</ListItemButton>
-		<ListItemButton>
-			<ListItemIcon>
-				<AssignmentIcon />
-			</ListItemIcon>
-			<ListItemText primary="Year-end sale" />
-		</ListItemButton>
-	</React.Fragment>
-);
+// export const secondaryListItems = (
+// 	<React.Fragment>
+// 		<ListSubheader component="div" inset>
+// 			Saved reports
+// 		</ListSubheader>
+// 		<ListItemButton>
+// 			<ListItemIcon>
+// 				<AssignmentIcon />
+// 			</ListItemIcon>
+// 			<ListItemText primary="Current month" />
+// 		</ListItemButton>
+// 		<ListItemButton>
+// 			<ListItemIcon>
+// 				<AssignmentIcon />
+// 			</ListItemIcon>
+// 			<ListItemText primary="Last quarter" />
+// 		</ListItemButton>
+// 		<ListItemButton>
+// 			<ListItemIcon>
+// 				<AssignmentIcon />
+// 			</ListItemIcon>
+// 			<ListItemText primary="Year-end sale" />
+// 		</ListItemButton>
+// 	</React.Fragment>
+// );

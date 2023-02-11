@@ -6,12 +6,12 @@ import SearchIcon from '@mui/icons-material/Search';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    backgroundColor: alpha(theme.palette.common.white, 1),
     '&:hover': {
         backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     marginLeft: 0,
-    width: '100%',
+    width: '30%',
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(1),
         width: 'auto',
@@ -20,12 +20,13 @@ const Search = styled('div')(({ theme }) => ({
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
+    // backgroundcolor: 'red',
     height: '100%',
     position: 'absolute',
-    pointerEvents: 'none',
+    // pointerEvents: 'none',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -47,9 +48,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export const SearchBar = () => {
     return (
-        <Box sx={{ flexGrow: 1 }}>
+        <Box>
             <Search>
-                <SearchIconWrapper>
+                <SearchIconWrapper sx={{ backgroundColor: 'primary' }}>
                     <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase

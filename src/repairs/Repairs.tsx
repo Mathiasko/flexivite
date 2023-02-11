@@ -18,47 +18,18 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { GET_ALL_REPAIRS } from "../queries.js";
+import { useQuery } from "@apollo/client";
 import { visuallyHidden } from '@mui/utils';
 
 interface Data {
-  id: string;
+  id: number;
+  number: string;
   date: string;
   customer: string;
   bicycle: string;
   status: string;
 }
-
-function createData(
-  id: string,
-  date: string,
-  customer: string,
-  bicycle: string,
-  status: string,
-): Data {
-  return {
-    id,
-    date,
-    customer,
-    bicycle,
-    status,
-  };
-}
-
-const rows = [
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-07-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '15-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-12-2023', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-02-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-11-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '13-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Done'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -85,6 +56,9 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -163,7 +137,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{
-              'aria-label': 'select all desserts',
+              'aria-label': 'select all repairs',
             }}
           />
         </TableCell>
@@ -227,7 +201,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Repairs
+          All Repairs
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -249,10 +223,15 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 export const Repairs = () => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { data: repairs } = useQuery(GET_ALL_REPAIRS);
+  const repairsLength = repairs?.repairs?.length;
+
+  console.log("repairs", repairs?.repairs);
+  console.log("repairsLEngth", repairs?.repairs?.length)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -265,19 +244,19 @@ export const Repairs = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
+      const newSelected = repairs && Array.isArray(repairs) ? repairs.map((n) => n.id) : [];
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
+    let newSelected: readonly number[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -288,7 +267,6 @@ export const Repairs = () => {
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
   };
 
@@ -301,11 +279,12 @@ export const Repairs = () => {
     setPage(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
+  // // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - repairsLength) : 0;
+  console.log("emptyRows", emptyRows)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -322,29 +301,30 @@ export const Repairs = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={repairsLength}
             />
             <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
+              {stableSort(repairs?.repairs, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                .map((repair, index) => {
+                  const isItemSelected = isSelected(repair.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
+
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, row.name)}
+                      onClick={(event) => handleClick(event, repair?.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={index}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
-                          checked={isItemSelected}
+                          // checked={isItemSelected}
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
@@ -356,12 +336,12 @@ export const Repairs = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.id}
+                        {repair.number}
                       </TableCell>
-                      <TableCell align="right">{row.date}</TableCell>
-                      <TableCell align="right">{row.customer}</TableCell>
-                      <TableCell align="right">{row.bicycle}</TableCell>
-                      <TableCell align="right">{row.status}</TableCell>
+                      <TableCell align="right">{repair.date}</TableCell>
+                      <TableCell align="right">{repair.customer.fullName}</TableCell>
+                      <TableCell align="right">{repair.bicycle.brand.value}</TableCell>
+                      <TableCell align="right">{repair.status.value}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -376,7 +356,7 @@ export const Repairs = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={rows.length}
+          count={repairsLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -386,3 +366,5 @@ export const Repairs = () => {
     </Box>
   );
 }
+
+

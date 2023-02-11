@@ -7,7 +7,7 @@ import { Bicycles } from "../bicycles/Bicycles";
 import { Products } from "../products/Products";
 import { Customers } from "../customers/Customers";
 import { Employees } from "../employees/Employees";
-import { Repairs } from "../reapirs/Repairs";
+import { Repairs } from "../repairs/Repairs";
 import { Sales } from "../sales/Sales";
 
 export const RouteList = () => {
