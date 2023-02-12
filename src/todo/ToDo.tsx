@@ -56,8 +56,12 @@ export const ToDo = () => {
 					<TabPanel value="1">
 						<Waiting waiting={data?.repairsToDo} />
 					</TabPanel>
-					<TabPanel value="2"><InProgress inProgress={data?.repairsInProgress} /></TabPanel>
-					<TabPanel value="3"><Done done={data?.repairsDone} /></TabPanel>
+					<TabPanel value="2">
+						<InProgress inProgress={data?.repairsInProgress} />
+					</TabPanel>
+					<TabPanel value="3">
+						<Done done={data?.repairsDone} />
+					</TabPanel>
 				</TabContext>
 			</Grid>
 			<Grid item paddingTop={2} paddingX={3} xs={2}>

@@ -8,11 +8,10 @@ import { useStore } from "../../Store.js";
 import { Box } from "@mui/system";
 import { nextInterface, productInterface } from "../../Interfaces.js";
 
-export function Products({ setNextDisabled }: nextInterface) {
+export function Products() {
 	const products: productInterface[] = useStore((state) => state.products);
 
 	const handleClick = (item: productInterface) => {
-		setNextDisabled(false);
 		addProductToCart(item);
 	};
 	const addProductToCart = useStore((state) => state.addProductToCart);

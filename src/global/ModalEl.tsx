@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { animated, useSpring } from "@react-spring/web";
 import { useStore } from "../Store.js";
+import { useLocation } from "react-router-dom";
+import Repair from "../createNew/repair/Repair.js";
 
 interface FadeProps {
 	children?: React.ReactElement;
@@ -50,7 +52,6 @@ export default function ModalEl() {
 	const open = useStore((state) => state.modal);
 	const toggleModal = useStore((state) => state.toggleModal);
 	const modalContent = useStore((state) => state.modalContent);
-
 	return (
 		<div>
 			<Modal
@@ -64,7 +65,12 @@ export default function ModalEl() {
 					timeout: 500,
 				}}>
 				<Fade in={open}>
-					<Box sx={style} position={"absolute"} left={"50%"} top={"50%"} minWidth={'80%'}>
+					<Box
+						sx={style}
+						position={"absolute"}
+						left={"50%"}
+						top={"50%"}
+						minWidth={modalContent?.type?.name == "Repair" ? "80%" : "50%"}>
 						{modalContent}
 					</Box>
 				</Fade>

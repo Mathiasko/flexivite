@@ -5,10 +5,9 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
-import { useStore } from "../../Store.js";
 import { SelectTaskParts } from "./SelectTaskParts";
 import { SelectCustomerBike } from "./SelectCustomerBike";
-import { Summary } from "./Summary.js";
+import { RepairSummary } from "./RepairSummary.js";
 import React, { useState } from "react";
 
 export default function Repair() {
@@ -25,15 +24,12 @@ export default function Repair() {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
-	const selectedBicycle = useStore((state) => state.selectedBicycle);
-	const selectedCustomer = useStore((state) => state.selectedCustomer);
-
 	const [nextDisabled, setNextDisabled] = useState(true);
 
 	const stepContents = [
 		<SelectCustomerBike setNextDisabled={setNextDisabled} />,
 		<SelectTaskParts setNextDisabled={setNextDisabled} />,
-		<Summary />,
+		<RepairSummary />,
 	];
 
 	return (

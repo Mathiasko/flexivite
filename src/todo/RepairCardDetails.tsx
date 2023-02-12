@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Autocomplete, Box, Button, Container, Grid, TextField, Typography } from "@mui/material";
 import { CheckListProduct } from "./CheckListProduct";
 import { formatDate } from "../helper/dateConversion";
@@ -6,7 +6,7 @@ import { useStore } from "../Store.js";
 import { repairInterface } from "../Interfaces";
 import { CheckListTask } from "./CheckListTask";
 import { useMutation } from "@apollo/client";
-import { TAKE_REPAIR } from "../queries";
+import { EDIT_REPAIR_COMMENT, TAKE_REPAIR } from "../queries";
 
 const Pay = ({ id }: { id: string }) => {
 	const [returnRepair] = useMutation(TAKE_REPAIR);
@@ -47,8 +47,20 @@ export const RepairCardDetails = () => {
 	}: repairInterface = useStore((state) => state?.selectedRepair);
 
 	const repairDone = status.id === "0c3abf0e-a548-445b-8323-e3f580d54a84" ? true : false;
+	const [editComment] = useMutation(EDIT_REPAIR_COMMENT);
 	const [paymentMethod, setPaymentMethod] = useState(2);
+	const [newComment, setNewComment] = useState(comment);
+	const [submitComment, setSubmitComment] = useState(true);
 
+	useEffect(() => {
+		setNewComment(comment);
+	}, [comment]);
+
+	function handleComment() {
+		editComment({ variables: { id: id, comment: newComment } }).then(({ data }) => {
+			setNewComment(data.editRepairComment.comment);
+		});
+	}
 	return (
 		<Container className="box-shadow" sx={{ backgroundColor: "#F5F5F5", borderRadius: "10px" }}>
 			<Box maxHeight={"80vh"} overflow={"auto"}>
@@ -61,8 +73,13 @@ export const RepairCardDetails = () => {
 							Date: <strong>{formatDate(createdAt)}</strong>
 						</Typography>
 						<Typography>
-							Taken by: <strong>{technician?.name}</strong>
+							Taken by: <strong>{takenBy?.name}</strong>
 						</Typography>
+						{technician ? (
+							<Typography>Technician: {<strong>{technician?.name}</strong>}</Typography>
+						) : (
+							""
+						)}
 						<Typography>
 							Status: <strong>{status?.value}</strong>
 						</Typography>
@@ -94,8 +111,18 @@ export const RepairCardDetails = () => {
 							rows={4}
 							fullWidth={true}
 							margin={"dense"}
+							value={newComment}
+							onChange={({ target }) => {
+								setNewComment(target.value);
+								setSubmitComment(false);
+							}}
 							multiline
 						/>
+						<div hidden={submitComment}>
+							<Button variant="outlined" size="large" onClick={() => handleComment()}>
+								Save
+							</Button>
+						</div>
 					</Grid>
 					<Grid item xs={3} sx={{ maxWidth: "100px" }}>
 						<Box

@@ -1,7 +1,7 @@
 import { Grid } from "@mui/material";
 import { nextInterface } from "../../Interfaces";
 import { SelectBicycle } from "./SelectBicycle";
-import { SelectCustomer } from "./SelectCustomer";
+import { SelectCustomer } from "../common/SelectCustomer";
 
 export const SelectCustomerBike = ({ setNextDisabled }: nextInterface) => {
 	return (

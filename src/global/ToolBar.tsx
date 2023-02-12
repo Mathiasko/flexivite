@@ -1,20 +1,63 @@
-//@ts-nocheck
-import React from "react";
-import { Button, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { Button, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
-import { useStore } from "../Store.js";
-import Repair from "../createNew/repair/Repair.js";
 import { SearchBar } from "./SearchBar";
-import { useLocation } from 'react-router-dom'
+import { useLocation } from "react-router-dom";
+import Repair from "../createNew/repair/Repair";
+import { Rental } from "../createNew/rental/Rental";
+import { Sale } from "../createNew/sale/Sale";
+import { useStore } from "../Store.js";
 
-
-export const ToolBar = () => {
+const CreateOptopns = ({ handleClose, hidden }: any) => {
 	const toggleModal = useStore((state) => state.toggleModal);
 	const setModalContent = useStore((state) => state.setModalContent);
+
+	const options = [
+		{ label: "Repair", element: <Repair /> },
+		{ label: "Rental", element: <Rental /> },
+		{ label: "Sale", element: <Sale /> },
+	];
+
+	return (
+		<div hidden={!hidden}>
+			<Box display={"flex"}>
+				{options.map((option, index) => (
+					<ListItemButton
+						sx={{
+							backgroundColor: "#e1e1e1",
+							margin: "5px",
+							padding: "10px 18px",
+							borderRadius: "3px",
+						}}
+						onClick={() => {
+							toggleModal();
+							setModalContent(option.element);
+							handleClose();
+						}}
+						key={index}>
+						<ListItemText  primary={option.label} />
+					</ListItemButton>
+				))}
+			</Box>
+		</div>
+	);
+};
+
+export const ToolBar = () => {
 	const location = useLocation();
-	// console.log(location.pathname);
 	const title = location.pathname;
+
+	const [open, setOpen] = useState(false);
+	console.log("open", open);
+
+	const handleClickOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
+	};
 
 	return (
 		<Box
@@ -27,17 +70,13 @@ export const ToolBar = () => {
 				{title.slice(1).toUpperCase()}
 			</Typography>
 			<SearchBar />
-			<Box>
-				<Button
-					onClick={() => {
-						toggleModal();
-						setModalContent(<Repair />);
-					}}
-					variant="contained"
-					sx={{ padding: "15px 20px" }}>
-					<AddCircleRoundedIcon /> <Typography marginLeft={1}>ADD NEW</Typography>
+
+			<div hidden={open}>
+				<Button variant="contained" sx={{ padding: "15px 20px" }} onClick={handleClickOpen}>
+					<AddCircleRoundedIcon /> <Typography marginLeft={1}>CREATE NEW</Typography>
 				</Button>
-			</Box>
+			</div>
+			<CreateOptopns hidden={open} handleClose={handleClose} />
 		</Box>
 	);
 };

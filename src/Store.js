@@ -95,7 +95,7 @@ const store = (set) => ({
 		});
 	},
 	addBicycleToCart: (bicycle, price) => {
-		const bicycleItem = { ...bicycle, price };
+		const bicycleItem = { bicycle, price };
 		return set(({ bicycleCart }) => {
 			const bicycleIndex = bicycleCart.findIndex((cartBicycle) => cartBicycle.id === bicycle.id);
 			if (bicycleIndex === -1) {
