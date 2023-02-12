@@ -6,10 +6,7 @@ import { ProductCart } from "../common/ProductCart";
 import { SearchTasks } from "./SearchTasks";
 import { SearchProducts } from "../common/SearchProducts";
 
-interface selectTaskPartsInterface {
-	setNextDisabled: React.Dispatch<React.SetStateAction<boolean>>;
-}
-export const SelectTaskParts = ({ setNextDisabled }: selectTaskPartsInterface) => {
+export const SelectTaskParts = ({ repair }) => {
 	return (
 		<Grid container columns={2}>
 			<Grid minWidth={'max-conent'} item xs={1}>
@@ -21,10 +18,10 @@ export const SelectTaskParts = ({ setNextDisabled }: selectTaskPartsInterface) =
 				<Products setNextDisabled={setNextDisabled} />
 			</Grid>
 			<Grid minWidth={'max-conent'} item xs={1}>
-				<TaskCart />
+				 <TaskCart />  {/* pridat repair*/}
 			</Grid>
 			<Grid minWidth={'max-conent'} item xs={1}>
-				<ProductCart />
+				 <ProductCart />  {/* pridat repair*/}
 			</Grid>
 		</Grid>
 	);
