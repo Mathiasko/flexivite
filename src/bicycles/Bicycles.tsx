@@ -20,12 +20,11 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 import { GET_ALL_BICYCLES } from '../queries';
 import { useQuery } from '@apollo/client';
-import { logMissingFieldErrors } from '@apollo/client/core/ObservableQuery';
 
 interface Data {
   id: number;
   name: string;
-  category: string;
+  status: string;
   type: string;
   frameNumber: string;
   owner: string;
