@@ -13,11 +13,11 @@ export const SelectTaskParts = ({ setNextDisabled }: selectTaskPartsInterface) =
 	return (
 		<Grid container columns={2}>
 			<Grid minWidth={'max-conent'} item xs={1}>
-        <SearchTasks/>
+				<SearchTasks />
 				<Tasks setNextDisabled={setNextDisabled} />
 			</Grid>
 			<Grid minWidth={'max-conent'} item xs={1}>
-        <SearchProducts/>
+				<SearchProducts />
 				<Products setNextDisabled={setNextDisabled} />
 			</Grid>
 			<Grid minWidth={'max-conent'} item xs={1}>

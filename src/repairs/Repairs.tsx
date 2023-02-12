@@ -19,10 +19,12 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { setModalContent, toggleModal } from '../Store';
+import { RepairEditCard } from './RepairEditCard';
 import { GET_ALL_REPAIRS } from "../queries.js";
 import { useQuery } from "@apollo/client";
 import { visuallyHidden } from '@mui/utils';
+import { useStore } from '../Store';
+
 
 interface Data {
   id: number;
@@ -232,8 +234,12 @@ export const Repairs = () => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
+  const setModalContent = useStore(({ setModalContent }) => setModalContent);
+  const toggleModal = useStore(({ toggleModal }) => toggleModal);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => setOpen(false);
   const { data: repairs } = useQuery(GET_ALL_REPAIRS);
   const repairsLength = repairs?.repairs?.length;
 
@@ -349,10 +355,16 @@ export const Repairs = () => {
                       <TableCell align="right">{repair.bicycle.brand.value}</TableCell>
                       <TableCell align="right">{repair.status.value}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={() => { setModalContent(<RepairEditCard id={repair.id} />); toggleModal() }}>
+                        <IconButton onClick={() => {
+                          setModalContent(<RepairEditCard repair={repair} />);
+                          toggleModal()
+                        }}>
                           <EditIcon color="primary" />
                         </IconButton>
                       </TableCell>
+
+
+
                     </TableRow>
                   );
                 })}
