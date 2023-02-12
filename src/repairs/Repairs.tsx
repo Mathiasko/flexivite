@@ -17,7 +17,9 @@ import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { setModalContent, toggleModal } from '../Store';
 import { GET_ALL_REPAIRS } from "../queries.js";
 import { useQuery } from "@apollo/client";
 import { visuallyHidden } from '@mui/utils';
@@ -107,6 +109,11 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: 'Status',
+  },
+  {
+    numeric: true,
+    disablePadding: false,
+    label: 'Edit',
   },
 ];
 
@@ -230,8 +237,8 @@ export const Repairs = () => {
   const { data: repairs } = useQuery(GET_ALL_REPAIRS);
   const repairsLength = repairs?.repairs?.length;
 
-  console.log("repairs", repairs?.repairs);
-  console.log("repairsLEngth", repairs?.repairs?.length)
+  // console.log("repairs", repairs?.repairs);
+  // console.log("repairsLEngth", repairs?.repairs?.length)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -284,7 +291,7 @@ export const Repairs = () => {
   // // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - repairsLength) : 0;
-  console.log("emptyRows", emptyRows)
+  // console.log("emptyRows", emptyRows)
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -309,7 +316,6 @@ export const Repairs = () => {
                 .map((repair, index) => {
                   const isItemSelected = isSelected(repair.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
-
                   return (
 
                     <TableRow
@@ -342,6 +348,11 @@ export const Repairs = () => {
                       <TableCell align="right">{repair.customer.fullName}</TableCell>
                       <TableCell align="right">{repair.bicycle.brand.value}</TableCell>
                       <TableCell align="right">{repair.status.value}</TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => { setModalContent(<RepairEditCard id={repair.id} />); toggleModal() }}>
+                          <EditIcon color="primary" />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -363,7 +374,7 @@ export const Repairs = () => {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Paper>
-    </Box>
+    </Box >
   );
 }
 
