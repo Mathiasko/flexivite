@@ -94,19 +94,18 @@ const store = (set) => ({
 			};
 		});
 	},
-	addBicycleToCart: (bicycle, price) => {
-		const bicycleItem = { bicycle, price };
-		return set(({ bicycleCart }) => {
-			const bicycleIndex = bicycleCart.findIndex((cartBicycle) => cartBicycle.id === bicycle.id);
+	addBicycleToCart: ({ bicycle, price }) =>
+		set(({ bicycleCart }) => {
+			const bicycleIndex = bicycleCart.findIndex((cartBike) => cartBike.bicycle.id === bicycle.id);
 			if (bicycleIndex === -1) {
-				return { bicycleCart: [...bicycleCart, bicycleItem] };
+				return { bicycleCart: [...bicycleCart, { bicycle, price }] };
 			}
-		});
-	},
-	removeBicycleFromCart: ({ id }) =>
+			return bicycleCart;
+		}),
+	removeBicycleFromCart: (id) =>
 		set(({ bicycleCart }) => {
 			return {
-				bicycleCart: bicycleCart.filter((bicycle) => {
+				bicycleCart: bicycleCart.filter(({bicycle}) => {
 					return bicycle.id !== id;
 				}),
 			};

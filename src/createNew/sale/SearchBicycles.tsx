@@ -58,8 +58,8 @@ const BicyclePriceModal = ({ bicycle, setModal }: { bicycle: bicycleInterface; s
 					variant="outlined"
 					sx={{ marginY: 1 }}
 					onClick={() => {
-						addBicycleToCart(bicycle, price);
-						console.log("bicycle, price", bicycle, price);
+            handleClose()
+						addBicycleToCart({ bicycle: bicycle, price: price });
 					}}>
 					Add to Cart
 				</Button>
@@ -69,7 +69,7 @@ const BicyclePriceModal = ({ bicycle, setModal }: { bicycle: bicycleInterface; s
 };
 
 export const SearchBicycles = () => {
-	const [bicycle, setBicycle] = useState();
+	const [bicycle, setBicycle] = useState("");
 	const [modal, setModal] = useState(false);
 
 	function handleBicycleClick(bicycle) {
