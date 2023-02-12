@@ -18,46 +18,17 @@ import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
+import { useQuery } from '@apollo/client';
+import { GET_ALL_RENTALS } from '../queries';
 
 interface Data {
   id: string;
-  date: string;
+  number: string;
+  returned: boolean;
   customer: string;
-  bicycle: string;
-  status: string;
+  periodStart: Date;
+  periodEnd: Date;
 }
-
-function createData(
-  id: string,
-  date: string,
-  customer: string,
-  bicycle: string,
-  status: string,
-): Data {
-  return {
-    id,
-    date,
-    customer,
-    bicycle,
-    status,
-  };
-}
-
-const rows = [
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-07-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for repair'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '15-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-12-2023', 'Ezekiel Bryndza', 'white, Titan', 'In Progress'),
-  createData('R-20220222/1', '22-02-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-11-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '13-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Waiting for pickup'),
-  createData('R-20220222/1', '22-12-2022', 'Ezekiel Bryndza', 'white, Titan', 'Done'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -84,6 +55,9 @@ function getComparator<Key extends keyof any>(
 }
 
 function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) {
+  if (!array) {
+    return [];
+  }
   const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
@@ -104,16 +78,16 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'id',
+    id: 'number',
     numeric: false,
     disablePadding: true,
-    label: 'Repairs',
+    label: 'Rental',
   },
   {
-    id: 'date',
+    id: 'returned',
     numeric: true,
     disablePadding: false,
-    label: 'Date',
+    label: 'Returned',
   },
   {
     id: 'customer',
@@ -122,16 +96,16 @@ const headCells: readonly HeadCell[] = [
     label: 'Customer',
   },
   {
-    id: 'bicycle',
+    id: 'periodStart',
     numeric: true,
     disablePadding: false,
-    label: 'Bicycle',
+    label: 'Period Start',
   },
   {
-    id: 'status',
+    id: 'periodEnd',
     numeric: true,
     disablePadding: false,
-    label: 'Status',
+    label: 'Period End',
   },
 ];
 
@@ -226,7 +200,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          Rentals
+          All rentals
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -248,140 +222,144 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
 export const Rentals = () => {
   const [order, setOrder] = React.useState<Order>('asc');
-  const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
+  const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const { data: rentals } = useQuery(GET_ALL_RENTALS);
+  const rentalsLength = rentals?.rentals.length;
+  console.log("rentals", rentals);
+  console.log("rentals length", rentalsLength);
 
-  const handleRequestSort = (
-    event: React.MouseEvent<unknown>,
-    property: keyof Data,
-  ) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  // const handleRequestSort = (
+  //   event: React.MouseEvent<unknown>,
+  //   property: keyof Data,
+  // ) => {
+  //   const isAsc = orderBy === property && order === 'asc';
+  //   setOrder(isAsc ? 'desc' : 'asc');
+  //   setOrderBy(property);
+  // };
 
-  const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.checked) {
-      const newSelected = rows.map((n) => n.name);
-      setSelected(newSelected);
-      return;
-    }
-    setSelected([]);
-  };
+  // const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.checked) {
+  //     const newSelected = rentals.map((n) => n.name);
+  //     setSelected(newSelected);
+  //     return;
+  //   }
+  //   setSelected([]);
+  // };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected: readonly string[] = [];
+  // const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
+  //   const selectedIndex = selected.indexOf(name);
+  //   let newSelected: readonly string[] = [];
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
-      );
-    }
+  //   if (selectedIndex === -1) {
+  //     newSelected = newSelected.concat(selected, name);
+  //   } else if (selectedIndex === 0) {
+  //     newSelected = newSelected.concat(selected.slice(1));
+  //   } else if (selectedIndex === selected.length - 1) {
+  //     newSelected = newSelected.concat(selected.slice(0, -1));
+  //   } else if (selectedIndex > 0) {
+  //     newSelected = newSelected.concat(
+  //       selected.slice(0, selectedIndex),
+  //       selected.slice(selectedIndex + 1),
+  //     );
+  //   }
 
-    setSelected(newSelected);
-  };
+  //   setSelected(newSelected);
+  // };
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
+  // const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0);
+  // };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  // const isSelected = (name: string) => selected.indexOf(name) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  // // Avoid a layout jump when reaching the last page with empty rows.
+  // const emptyRows =
+  //   page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rentalsLength) : 0;
 
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer>
-          <Table
-            sx={{ minWidth: 750 }}
-            aria-labelledby="tableTitle"
-          >
-            <EnhancedTableHead
-              numSelected={selected.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={rows.length}
-            />
-            <TableBody>
-              {stableSort(rows, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+  // return (
+  //   <Box sx={{ width: '100%' }}>
+  //     <Paper sx={{ width: '100%', mb: 2 }}>
+  //       <EnhancedTableToolbar numSelected={selected.length} />
+  //       <TableContainer>
+  //         <Table
+  //           sx={{ minWidth: 750 }}
+  //           aria-labelledby="tableTitle"
+  //         >
+  //           <EnhancedTableHead
+  //             numSelected={selected.length}
+  //             order={order}
+  //             orderBy={orderBy}
+  //             onSelectAllClick={handleSelectAllClick}
+  //             onRequestSort={handleRequestSort}
+  //             rowCount={rentalsLength}
+  //           />
+  //           <TableBody>
+  //             {stableSort(rentals?.rentals, getComparator(order, orderBy))
+  //               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+  //               .map((rental, index) => {
+  //                 const isItemSelected = isSelected(rental.id);
+  //                 const labelId = `enhanced-table-checkbox-${index}`;
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.name)}
-                      role="checkbox"
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.name}
-                      selected={isItemSelected}
-                    >
-                      <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          checked={isItemSelected}
-                          inputProps={{
-                            'aria-labelledby': labelId,
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell
-                        component="th"
-                        id={labelId}
-                        scope="row"
-                        padding="none"
-                      >
-                        {row.id}
-                      </TableCell>
-                      <TableCell align="right">{row.date}</TableCell>
-                      <TableCell align="right">{row.customer}</TableCell>
-                      <TableCell align="right">{row.bicycle}</TableCell>
-                      <TableCell align="right">{row.status}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Paper>
-    </Box>
-  );
+  //                 return (
+  //                   <TableRow
+  //                     hover
+  //                     onClick={(event) => handleClick(event, rental.id)}
+  //                     role="checkbox"
+  //                     aria-checked={isItemSelected}
+  //                     tabIndex={-1}
+  //                     key={rental.id}
+  //                     selected={isItemSelected}
+  //                   >
+  //                     <TableCell padding="checkbox">
+  //                       <Checkbox
+  //                         color="primary"
+  //                         checked={isItemSelected}
+  //                         inputProps={{
+  //                           'aria-labelledby': labelId,
+  //                         }}
+  //                       />
+  //                     </TableCell>
+  //                     <TableCell
+  //                       component="th"
+  //                       id={labelId}
+  //                       scope="row"
+  //                       padding="none"
+  //                     >
+  //                       {rental.number}
+  //                     </TableCell>
+  //                     <TableCell align="right">{rental.returned}</TableCell>
+  //                     <TableCell align="right">{rental.customer.fullName}</TableCell>
+  //                     <TableCell align="right">{rental.periodStart}</TableCell>
+  //                     <TableCell align="right">{"2000DKK"}</TableCell>
+  //                   </TableRow>
+  //                 );
+  //               })}
+  //             {emptyRows > 0 && (
+  //               <TableRow>
+  //                 <TableCell colSpan={6} />
+  //               </TableRow>
+  //             )}
+  //           </TableBody>
+  //         </Table>
+  //       </TableContainer>
+  //       <TablePagination
+  //         rowsPerPageOptions={[5, 10, 25]}
+  //         component="div"
+  //         count={rentalsLength}
+  //         rowsPerPage={rowsPerPage}
+  //         page={page}
+  //         onPageChange={handleChangePage}
+  //         onRowsPerPageChange={handleChangeRowsPerPage}
+  //       />
+  //     </Paper>
+  //   </Box>
+  // );
 }

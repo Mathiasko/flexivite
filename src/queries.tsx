@@ -1158,7 +1158,6 @@ export const ADD_NEW_RENTAL_INVOICE_LINE = gql`
 		}
 	}
 `;
-
 export const GET_ALL_RENTALS = gql`
 	query getAlRentals {
 		rentals {
@@ -1173,7 +1172,6 @@ export const GET_ALL_RENTALS = gql`
 		}
 	}
 `;
-
 export const RETURN_RENTAL = gql`
 	mutation returnRental($rentalId: String!) {
 		returnRental(rentalId: $rentalId) {

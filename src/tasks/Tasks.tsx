@@ -1,3 +1,4 @@
+//@ts-nocheck
 import * as React from 'react';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -17,17 +18,15 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
+import { useQuery } from "@apollo/client";
+import { GET_TASKS } from "../queries.js";
 import { visuallyHidden } from '@mui/utils';
-import { useQuery } from '@apollo/client';
-import { GET_ALL_SALES } from '../queries';
 
 interface Data {
-  id: string;
-  number: string;
-  customer: string;
-  salesPerson: string;
-  date: Date;
-  price: string;
+  id: number;
+  name: string;
+  category: string;
+  duration: number;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -78,34 +77,22 @@ interface HeadCell {
 
 const headCells: readonly HeadCell[] = [
   {
-    id: 'number',
+    id: 'name',
     numeric: false,
     disablePadding: true,
-    label: 'Sale',
+    label: 'Task',
   },
   {
-    id: 'customer',
+    id: 'category',
     numeric: true,
     disablePadding: false,
-    label: 'Customer',
+    label: 'Category',
   },
   {
-    id: 'salesPerson',
+    id: 'duration',
     numeric: true,
     disablePadding: false,
-    label: 'Sales Person',
-  },
-  {
-    id: 'date',
-    numeric: true,
-    disablePadding: false,
-    label: 'Date',
-  },
-  {
-    id: 'price',
-    numeric: true,
-    disablePadding: false,
-    label: 'Price',
+    label: 'Duration',
   },
 ];
 
@@ -200,7 +187,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           id="tableTitle"
           component="div"
         >
-          All Sales
+          All tasks
         </Typography>
       )}
       {numSelected > 0 ? (
@@ -220,16 +207,16 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   );
 }
 
-export const Sales = () => {
+export const Tasks = () => {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('id');
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const { data: sales } = useQuery(GET_ALL_SALES);
-  const salesLength = sales?.sales.length;
-  console.log("sales", sales);
-  console.log("sales length", salesLength);
+  const { data: tasks } = useQuery(GET_TASKS);
+  const tasksLength = tasks?.tasks?.length;
+  console.log('tasks', tasks?.tasks);
+  console.log('tasksLength', tasksLength);
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -242,19 +229,19 @@ export const Sales = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = sales.map((n) => n.name);
+      const newSelected = products.map((n) => n.id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, name: string) => {
-    const selectedIndex = selected.indexOf(name);
+  const handleClick = (event: React.MouseEvent<unknown>, id: number) => {
+    const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = newSelected.concat(selected, id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -278,15 +265,15 @@ export const Sales = () => {
     setPage(0);
   };
 
-  const isSelected = (name: string) => selected.indexOf(name) !== -1;
+  const isSelected = (id: number) => selected.indexOf(id) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - salesLength) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - tasksLength) : 0;
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2, borderRadius: 0 }}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
@@ -299,23 +286,23 @@ export const Sales = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={salesLength}
+              rowCount={tasksLength}
             />
             <TableBody>
-              {stableSort(sales?.sales, getComparator(order, orderBy))
+              {stableSort(tasks?.tasks, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((sale, index) => {
-                  const isItemSelected = isSelected(sale.id);
+                .map((task, index) => {
+                  const isItemSelected = isSelected(task.id);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
                     <TableRow
                       hover
-                      onClick={(event) => handleClick(event, sale.id)}
+                      onClick={(event) => handleClick(event, task.id)}
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={sale.id}
+                      key={task.id}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -333,12 +320,10 @@ export const Sales = () => {
                         scope="row"
                         padding="none"
                       >
-                        {sale.number}
+                        {task.name}
                       </TableCell>
-                      <TableCell align="right">{sale.customer.fullName}</TableCell>
-                      <TableCell align="right">{sale.salesPerson?.name}</TableCell>
-                      <TableCell align="right">{sale.date?.date}</TableCell>
-                      <TableCell align="right">{"2000DKK"}</TableCell>
+                      <TableCell align="right">{task.taskCategory.name}</TableCell>
+                      <TableCell align="right">{task.duration}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -353,7 +338,7 @@ export const Sales = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={salesLength}
+          count={tasksLength}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
