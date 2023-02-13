@@ -443,6 +443,9 @@ export const GET_BICYCLES = gql`
 			id
 			type
 			frameNumber
+			status {
+				value
+			}
 			color {
 				value
 			}
@@ -565,21 +568,70 @@ export const ADD_PRODUCT_INVOICE_LINE = gql`
 	}
 `;
 export const GET_REPAIR = gql`
-	query Query($repairId: String) {
-		taskInvoiceLines(repairId: $repairId) {
+	query getRepair($id: String!) {
+		getRepair(id: $id) {
 			id
-			amount
-			price
-			time
-			task {
+			number
+			bicycle {
 				id
-				taskCategory {
+				type
+				color {
+					value
+				}
+				brand {
+					value
+				}
+			}
+			status {
+				value
+			}
+			customer {
+				fullName
+			}
+			technician {
+				name
+			}
+			taskInvoiceLines {
+				id
+				task {
 					id
 					name
+					taskCategory {
+						name
+					}
 				}
-				name
-				duration
+				time
 			}
+			productInvoiceLines {
+				id
+				product {
+					id
+					productBrand {
+						value
+					}
+					productCategory {
+						value
+					}
+					name
+					type
+				}
+				amount
+				price
+			}
+			dateStarted
+			dateFinished
+			dateReturned
+			spareBicycle {
+				type
+				brand {
+					value
+				}
+				color {
+					value
+				}
+			}
+			comment
+			createdAt
 		}
 	}
 `;
@@ -1053,14 +1105,21 @@ export const GET_ALL_PRODUCTS = gql`
 	}
 `;
 export const LOGIN = gql`
-	mutation ($id: Int!, $password: String!) {
-		comparePassword(id: $id, password: $password) {
+	query ($name: String!, $password: String!) {
+		comparePassword(name: $name, password: $password) {
 			error
 			employee {
 				id
 				name
-				role
 			}
+		}
+	}
+`;
+export const SIGNIN = gql`
+	mutation ($name: String!, $password: String!) {
+		createEmployee(name: $name, password: $password) {
+			id
+			name
 		}
 	}
 `;
@@ -1201,30 +1260,10 @@ export const GET_ALL_SALES = gql`
 			customer {
 				fullName
 			}
-			productInvoiceLines {
-				id
-				amount
-				price
-				product {
-					productBrand {
-						value
-					}
-					name
-					type
-				}
-			}
-			salesperson {
+			salesPerson {
 				name
 			}
-			bicycleInvoiceLines {
-				id
-				bicycle {
-					brand {
-						value
-					}
-					type
-				}
-			}
+			createdAt
 		}
 	}
 `;

@@ -21,7 +21,6 @@ const mdTheme: ThemeOptions = createTheme({
 	},
 });
 
-
 function LayoutContent() {
 	return (
 		<ThemeProvider theme={mdTheme}>

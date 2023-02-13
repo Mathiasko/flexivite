@@ -8,15 +8,14 @@ import { useStore } from "../../Store.js";
 import { Box } from "@mui/system";
 import { useLazyQuery } from "@apollo/client";
 import { GET_PRODUCTS_BY_CATEGORY } from "../../queries.js";
-import { nextInterface, taskInterface } from "../../Interfaces.js";
+import { taskInterface } from "../../Interfaces.js";
 
-export function Tasks({ setNextDisabled }: nextInterface) {
+export function Tasks() {
 	const [searchProduct] = useLazyQuery(GET_PRODUCTS_BY_CATEGORY);
 	const addTaskToCart = useStore((state) => state.addTaskToCart);
 	const storeProducts = useStore((state) => state.storeProducts);
 
 	const handleClick = (item: taskInterface) => {
-		setNextDisabled(false);
 		addTaskToCart(item);
 		searchProduct({ variables: { categoryId: item.fkProductCategoryId } })
 			.then(({ data }) => {

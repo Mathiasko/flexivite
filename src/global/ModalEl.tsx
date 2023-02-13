@@ -5,8 +5,6 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { animated, useSpring } from "@react-spring/web";
 import { useStore } from "../Store.js";
-import { useLocation } from "react-router-dom";
-import Repair from "../createNew/repair/Repair.js";
 
 interface FadeProps {
 	children?: React.ReactElement;

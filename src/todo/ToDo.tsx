@@ -5,7 +5,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Waiting } from "./Waiting";
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid } from "@mui/material";
 import { RepairCardDetails } from "./RepairCardDetails";
 import { useQuery } from "@apollo/client";
 import { GET_TODO } from "../queries";
@@ -31,8 +31,7 @@ export const ToDo = () => {
 			  }
 			| undefined;
 	}
-
-	const { data }: todoInterface = useQuery(GET_TODO);
+	const { data, loading }: todoInterface = useQuery(GET_TODO);
 
 	return (
 		<Grid container columns={3} height={"90vh"}>
@@ -47,12 +46,19 @@ export const ToDo = () => {
 							top: "0",
 							zIndex: 10,
 						}}>
-						<TabList onChange={handleChange} aria-label="lab API tabs example">
+						<TabList onChange={handleChange}>
 							<Tab label="Waiting For Repair" value="1" />
 							<Tab label="In Progress" value="2" />
 							<Tab label="Done" value="3" />
 						</TabList>
 					</Box>
+					{loading ? (
+						<Box sx={{ display: "flex", margin: "50px" }}>
+							<CircularProgress />
+						</Box>
+					) : (
+						""
+					)}
 					<TabPanel value="1">
 						<Waiting waiting={data?.repairsToDo} />
 					</TabPanel>

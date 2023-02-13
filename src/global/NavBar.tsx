@@ -2,14 +2,13 @@
 import React, { useState } from "react";
 import MuiDrawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import styled from "@emotion/styled";
-import { mainListItems, secondaryListItems, tertiaryListItems } from "./listItems";
-import { Box, ThemeOptions, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
+import { NavLink } from "react-router-dom";
+import { NavigationLinks } from "./NavigarionLinks";
 
 const drawerWidth: number = 240;
 
@@ -44,9 +43,9 @@ export const NavBar = () => {
 	const toggleDrawer = () => {
 		setOpen(!open);
 	};
-	const theme = useTheme();
+
 	return (
-		<Drawer theme={theme} variant="permanent" open={open}>
+		<Drawer variant="permanent" open={open}>
 			<Toolbar
 				sx={{
 					display: "flex",
@@ -58,25 +57,14 @@ export const NavBar = () => {
 					variant="h6"
 					noWrap
 					component="div"
-					sx={{ display: { sm: 'none', md: 'block' } }}
-				>
+					sx={{ display: { sm: "none", md: "block" } }}>
 					FlexiFix
 				</Typography>
 				<IconButton onClick={toggleDrawer}>
 					<ChevronLeftIcon />
 				</IconButton>
 			</Toolbar>
-			<List component="nav">
-				{mainListItems}
-				<Divider sx={{ my: 1 }} />
-				{secondaryListItems}
-				<Divider sx={{ my: 1 }} />
-				{tertiaryListItems}
-
-
-			</List>
+			<NavigationLinks />
 		</Drawer>
 	);
 };
-
-

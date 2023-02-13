@@ -23,6 +23,7 @@ export const SearchProducts = () => {
 	return (
 		<TextField
 			autoFocus
+			sx={{ padding: "0 10px" }}
 			variant={"outlined"}
 			placeholder="Search for Product"
 			onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

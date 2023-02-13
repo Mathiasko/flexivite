@@ -83,10 +83,6 @@ export interface taskInterface {
 	duration: number;
 }
 
-export interface nextInterface {
-	setNextDisabled?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 export interface bicycleInterface {
 	id: string;
 	type: string;
@@ -100,4 +96,14 @@ export interface bicycleInterface {
 	fkOwnerId: string;
 	fkHolderId: string;
 	fleetNr: string;
+}
+
+export interface BicyclePropInterface {
+	color: string;
+	frameNumber: string;
+	type: string;
+	brand: string;
+	gearsystem: string;
+	status: string;
+	tires: string;
 }

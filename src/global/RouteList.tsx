@@ -2,7 +2,6 @@ import Dashboard from "../dashboard/Dashboard";
 import { Route, Routes } from "react-router-dom";
 import SignIn from "../signIn/SignIn";
 import { ToDo } from "../todo/ToDo";
-import { Rentals } from "../rentals/Rentals";
 import { Bicycles } from "../bicycles/Bicycles";
 import { Products } from "../products/Products";
 import { Customers } from "../customers/Customers";
@@ -10,6 +9,7 @@ import { Employees } from "../employees/Employees";
 import { Repairs } from "../repairs/Repairs";
 import { Sales } from "../sales/Sales";
 import { Tasks } from "../tasks/Tasks";
+import { Rentals } from "../rentals/Rentals";
 
 export const RouteList = () => {
 	return (

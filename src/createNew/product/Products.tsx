@@ -6,7 +6,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { useStore } from "../../Store.js";
 import { Box } from "@mui/system";
-import { nextInterface, productInterface } from "../../Interfaces.js";
+import { productInterface } from "../../Interfaces.js";
 
 export function Products() {
 	const products: productInterface[] = useStore((state) => state.products);
