@@ -1234,6 +1234,15 @@ export const GET_ALL_RENTALS = gql`
 			customer {
 				fullName
 			}
+			bicycle {
+				color {
+					value
+				}
+        brand{
+          value
+        }
+        type
+			}
 			periodStart
 			periodEnd
 		}

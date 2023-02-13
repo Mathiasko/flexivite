@@ -61,6 +61,15 @@ export const RepairCardDetails = () => {
 			setNewComment(data.editRepairComment.comment);
 		});
 	}
+
+	const totalPriceTask = taskInvoiceLines.reduce((acc, obj) => {
+		return acc + obj.time * 200;
+	}, 0);
+
+	const totalPriceProd = productInvoiceLines.reduce((acc, obj) => {
+		return acc + obj.price * obj.amount;
+	}, 0);
+
 	return (
 		<Container className="box-shadow" sx={{ backgroundColor: "#F5F5F5", borderRadius: "10px" }}>
 			<Box maxHeight={"80vh"} overflow={"auto"}>
@@ -100,6 +109,9 @@ export const RepairCardDetails = () => {
 							<br />
 							Color: <strong>{`${bicycle.color.value}`}</strong>
 						</Typography>
+						<Typography marginTop={2}>Labour: {totalPriceTask} </Typography>
+						<Typography>Parts: {totalPriceProd} </Typography>
+						<Typography>Total: {totalPriceProd + totalPriceTask}dkk </Typography>
 					</Grid>
 					<Grid item xs={2}>
 						<TextField

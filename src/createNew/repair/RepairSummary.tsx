@@ -83,6 +83,17 @@ export const RepairSummary = () => {
 			});
 	}
 
+	const totalPriceTask = taskCart.reduce((acc, obj) => {
+		return acc + obj.duration * 200;
+	}, 0);
+
+	const totalPriceProd = productCart.reduce((acc, obj) => {
+		return acc + obj.product.sellPrice * obj.amount;
+	}, 0);
+
+	console.log("totalPriceTask", totalPriceTask);
+	console.log("totalPriceProd", totalPriceProd);
+
 	return (
 		<Box>
 			<Box display={"flex"}>

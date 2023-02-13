@@ -222,7 +222,7 @@ export const Repairs = () => {
 		setOrderBy(property);
 	};
 
-	const handleClick = (event: React.MouseEvent<unknown>, id: string) => {};
+	// const handleClick = (event: React.MouseEvent<unknown>, id: string) => {};
 
 	const handleChangePage = (event: unknown, newPage: number) => {
 		setPage(newPage);
@@ -280,7 +280,7 @@ export const Repairs = () => {
 									return (
 										<TableRow
 											hover
-											onClick={(event) => handleClick(event, repair?.id)}
+											// onClick={(event) => handleClick(event, repair?.id)}
 											role="checkbox"
 											tabIndex={-1}
 											key={index}>

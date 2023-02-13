@@ -64,6 +64,15 @@ export interface repairInterface {
 	comment: string;
 	createdAt: string;
 }
+export interface RentalInterface {
+	id: string;
+	number: string;
+	salesPerson: technicianInterface;
+	customer: CustomerInterface;
+	bicycle: bicycleInterface;
+	periodStart: string;
+	periodEnd: string;
+}
 export interface partInterface {
 	product: productInterface;
 	amount: number;
