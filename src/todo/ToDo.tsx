@@ -5,7 +5,7 @@ import TabContext from "@mui/lab/TabContext";
 import TabList from "@mui/lab/TabList";
 import TabPanel from "@mui/lab/TabPanel";
 import { Waiting } from "./Waiting";
-import { CircularProgress, Grid } from "@mui/material";
+import { Badge, CircularProgress, Grid } from "@mui/material";
 import { RepairCardDetails } from "./RepairCardDetails";
 import { useQuery } from "@apollo/client";
 import { GET_TODO } from "../queries";
@@ -47,9 +47,9 @@ export const ToDo = () => {
 							zIndex: 10,
 						}}>
 						<TabList onChange={handleChange}>
-							<Tab label="Waiting For Repair" value="1" />
-							<Tab label="In Progress" value="2" />
-							<Tab label="Done" value="3" />
+							<Tab label={`Waiting For Repair (${data?.repairsToDo ? data?.repairsToDo.length: '-'})`} value="1" />
+							<Tab label={`In Progress (${data?.repairsInProgress ? data?.repairsInProgress.length: '-'})`} value="2" />
+							<Tab label={`Done (${data?.repairsDone ? data?.repairsDone.length: '-'})`} value="3" />
 						</TabList>
 					</Box>
 					{loading ? (

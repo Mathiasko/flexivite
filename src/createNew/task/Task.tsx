@@ -27,7 +27,6 @@ export const Task = () => {
 	const [categoryModal, setCategoryModal] = useState(false);
 	const [taskModal, setTaskModal] = useState(false);
 
-
 	useEffect(() => {
 		searchTasks().then(({ data }) => {
 			storeTasks(data.taskByCategory);
@@ -45,15 +44,21 @@ export const Task = () => {
 				""
 			)}
 			<Box>
-				<Typography>Category</Typography>
+				<Typography variant="h5">Categories</Typography>
 				<Button
+					variant="outlined"
 					onClick={() => {
 						setCategoryModal(true);
 					}}>
 					Create New
 				</Button>
-				<SearchTasks />
-				<Box boxShadow={3} borderRadius={2} height={"200px"} overflow={"auto"} m={1}>
+				<Box
+					boxShadow={3}
+					borderRadius={2}
+					height={"200px"}
+					width={"300px"}
+					overflow={"auto"}
+					m={1}>
 					<Table size="small">
 						<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
 							<TableRow>
@@ -78,24 +83,30 @@ export const Task = () => {
 				</Box>
 			</Box>
 			<Box>
-      {taskModal ? (
-				<NewTaskModal
-					setTaskModal={setTaskModal}
-          taskCategoryId={taskCategory}
-				/>
-			) : (
-				""
-			)}
+				{taskModal ? (
+					<NewTaskModal setTaskModal={setTaskModal} taskCategoryId={taskCategory} />
+				) : (
+					""
+				)}
 				<Box>
-					<Typography>Category</Typography>
+					<Typography variant="h5">Tasks</Typography>
 
 					<Button
+						variant="outlined"
 						onClick={() => {
 							setTaskModal(true);
 						}}>
 						Create New
 					</Button>
-					<Box boxShadow={3} borderRadius={2} height={"200px"} overflow={"auto"} m={1}>
+
+					<Box
+						boxShadow={3}
+						borderRadius={2}
+						height={"200px"}
+						width={"500px"}
+						overflow={"auto"}
+						m={1}>
+						<SearchTasks />
 						<Table size="small">
 							<TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#FFF" }}>
 								<TableRow>

@@ -3,10 +3,10 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 const store = (set) => ({
-	signedIn: { id: "13d89626-0025-4430-a9b0-2473cc931c24", name: "maros" },
-	selectedBicycle: undefined,
-	selectedCustomer: undefined,
-	selectedRepair: undefined,
+	signedIn: null,
+	selectedBicycle: null,
+	selectedCustomer: null,
+	selectedRepair: null,
 	productCart: [],
 	bicycleCart: [],
 	taskCart: [],
@@ -21,8 +21,23 @@ const store = (set) => ({
 	modal: false,
 	modalContent: {},
 
-	signIn: (employee) => set(() => ({ signedIn: employee })),
-	logOut: () => set(() => ({ signedIn: undefined })),
+	autoSign: () =>
+		set(() => {
+			return window.localStorage.getItem("user")
+				? { signedIn: JSON.parse(window.localStorage.getItem("user")) }
+				: null;
+		}),
+	signIn: (employee) =>
+		set(() => {
+			window.localStorage.setItem("user", JSON.stringify(employee));
+			return { signedIn: employee };
+		}),
+
+	logOut: () =>
+		set(() => {
+			window.localStorage.setItem("user", null);
+			return { signedIn: null };
+		}),
 	toggleModal: () => {
 		set((state) => ({
 			modal: !state.modal,

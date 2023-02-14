@@ -25,7 +25,7 @@ export const RentalSummary = ({ endDate, price }) => {
 			editBicycle({
 				variables: {
 					id: data.createRental.bicycle.id,
-					status: "0ddf9f7f-5728-44fc-b021-09a6cfc6efc6", //rented out
+					status: "c90f571b-0cb2-4d93-99ed-8ae748ef834e", //rented out
 					holder: data.createRental.customer.id,
 				},
 			});

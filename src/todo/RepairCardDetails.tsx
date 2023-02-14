@@ -32,6 +32,9 @@ const Pay = ({ id }: { id: string }) => {
 };
 
 export const RepairCardDetails = () => {
+	const repair: repairInterface = useStore((state) => state?.selectedRepair);
+	const setModalContent = useStore(({ setModalContent }) => setModalContent);
+	const toggleModal = useStore(({ toggleModal }) => toggleModal);
 	const {
 		number,
 		bicycle,
@@ -44,11 +47,10 @@ export const RepairCardDetails = () => {
 		createdAt,
 		productInvoiceLines,
 		taskInvoiceLines,
-	}: repairInterface = useStore((state) => state?.selectedRepair);
-
+	} = repair;
 	const repairDone = status.id === "0c3abf0e-a548-445b-8323-e3f580d54a84" ? true : false;
 	const [editComment] = useMutation(EDIT_REPAIR_COMMENT);
-	const [paymentMethod, setPaymentMethod] = useState(2);
+	const [paymentMethod, setPaymentMethod] = useState(0);
 	const [newComment, setNewComment] = useState(comment);
 	const [submitComment, setSubmitComment] = useState(true);
 
@@ -69,6 +71,7 @@ export const RepairCardDetails = () => {
 	const totalPriceProd = productInvoiceLines.reduce((acc, obj) => {
 		return acc + obj.price * obj.amount;
 	}, 0);
+
 
 	return (
 		<Container className="box-shadow" sx={{ backgroundColor: "#F5F5F5", borderRadius: "10px" }}>
@@ -182,7 +185,19 @@ export const RepairCardDetails = () => {
 								<TextField variant={"outlined"} {...props} label="Payment Method" />
 							)}
 						/>
-						{paymentMethod > 0 ? <Pay id={id} /> : ""}
+						{paymentMethod > 0 ? (
+							<>
+								<Pay id={id} />
+								<Button
+									onClick={() => {
+										render();
+									}}>
+									Invoice
+								</Button>
+							</>
+						) : (
+							""
+						)}
 					</Box>
 				) : (
 					""
