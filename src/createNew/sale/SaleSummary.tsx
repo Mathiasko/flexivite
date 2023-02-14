@@ -34,6 +34,7 @@ const Pay = ({ paymentMethod }: { paymentMethod: number }) => {
 		(state) => state.productCart
 	);
 	const selectedCustomer: CustomerInterface = useStore((state) => state.selectedCustomer);
+	const toggleModal = useStore((state) => state.toggleModal);
 
 	function postSale() {
 		createSale({
@@ -45,6 +46,7 @@ const Pay = ({ paymentMethod }: { paymentMethod: number }) => {
 		})
 			.then(({ data }) => {
 				productCart?.map(({ amount, product }) => {
+					toggleModal();
 					createProductInvoiceLine({
 						variables: {
 							fkSaleId: data.createSale.id,
@@ -54,6 +56,7 @@ const Pay = ({ paymentMethod }: { paymentMethod: number }) => {
 						},
 					}).then((e) => {
 						console.log(e);
+						emptyStore();
 					});
 				});
 				if (bicycleCart.length) {

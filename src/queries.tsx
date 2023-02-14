@@ -410,6 +410,57 @@ export const DELETE_PRODUCT_INVOICE_LINE = gql`
 		}
 	}
 `;
+
+export const CREATE_TASK = gql`
+	mutation createTask(
+		$name: String!
+		$fkTaskCategory: String!
+		$fkProductCategoryId: String!
+		$duration: number!
+	) {
+		createTask(
+			input: {
+				name: $name
+				fkTaskCategory: $fkTaskCategory
+				fkProductCategoryId: $fkProductCategoryId
+				duration: $duration
+			}
+		) {
+			id
+			name
+			taskCategory {
+				name
+			}
+			fkProductCategoryId
+			duration
+		}
+	}
+`;
+
+export const CREATE_TASK_CATEGORY = gql`
+	mutation createTaskCategory($name: String!) {
+		createTaskCategory(input: { name: $name }) {
+			id
+			name
+		}
+	}
+`;
+export const TASK_CATEGORY = gql`
+	query taskCategory {
+		taskCategory {
+			id
+			name
+		}
+	}
+`;
+export const TASKS_BY_CATEGORY = gql`
+	query taskByCategory($categoryId: String!) {
+		taskByCategory(categoryId: $categoryId) {
+			id
+			name
+		}
+	}
+`;
 export const GET_TASK_INVOICE_LINES = gql`
 	query taskInvoiceLines($repairId: String) {
 		taskInvoiceLines(repairId: $repairId) {
@@ -1238,10 +1289,10 @@ export const GET_ALL_RENTALS = gql`
 				color {
 					value
 				}
-        brand{
-          value
-        }
-        type
+				brand {
+					value
+				}
+				type
 			}
 			periodStart
 			periodEnd

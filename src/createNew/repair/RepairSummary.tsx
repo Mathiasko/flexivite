@@ -18,7 +18,12 @@ import {
 	productInterface,
 	taskInterface,
 } from "../../Interfaces.js";
-import { ADD_PRODUCT_INVOICE_LINE, ADD_TASK_INVOICE_LINE, POST_NEW_REPAIR } from "../../queries.js";
+import {
+	ADD_PRODUCT_INVOICE_LINE,
+	ADD_TASK_INVOICE_LINE,
+	GET_TODO,
+	POST_NEW_REPAIR,
+} from "../../queries.js";
 import { useStore } from "../../Store.js";
 
 export const RepairSummary = () => {
@@ -31,7 +36,9 @@ export const RepairSummary = () => {
 	const signedIn = useStore((state) => state.signedIn);
 	const selectedCustomer: CustomerInterface = useStore((state) => state.selectedCustomer);
 	const selectedBicycle: bicycleInterface = useStore((state) => state.selectedBicycle);
-	const [createRepair] = useMutation(POST_NEW_REPAIR);
+	const [createRepair] = useMutation(POST_NEW_REPAIR, {
+		refetchQueries: [{ query: GET_TODO }],
+	});
 	const [createTaskInvoiceLine] = useMutation(ADD_TASK_INVOICE_LINE);
 	const [createProductInvoiceLine] = useMutation(ADD_PRODUCT_INVOICE_LINE);
 	const [comment, setComment] = useState("");
@@ -91,9 +98,6 @@ export const RepairSummary = () => {
 		return acc + obj.product.sellPrice * obj.amount;
 	}, 0);
 
-	console.log("totalPriceTask", totalPriceTask);
-	console.log("totalPriceProd", totalPriceProd);
-
 	return (
 		<Box>
 			<Box display={"flex"}>
@@ -118,6 +122,13 @@ export const RepairSummary = () => {
 					multiline
 					onChange={({ target }) => setComment(target.value)}
 				/>
+				<Box>
+					<Typography marginTop={2}>Labour: {totalPriceTask} </Typography>
+					<Typography>Parts: {totalPriceProd} </Typography>
+					<Typography variant="h6">
+						Total: <strong> {totalPriceProd + totalPriceTask}dkk </strong>
+					</Typography>
+				</Box>
 			</Box>
 			<Box display={"flex"}>
 				<Box borderRadius={2} boxShadow={4} p={2} m={1}>
