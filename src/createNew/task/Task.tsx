@@ -113,8 +113,8 @@ export const Task = () => {
 												sx={{ cursor: "pointer" }}
 												onClick={() => handleClick(task)}>
 												<TableCell>{task.name}</TableCell>
-												{/* <TableCell>{task.taskCategory.name}</TableCell>
-												<TableCell>{task.duration}</TableCell> */}
+												<TableCell>{task.taskCategory.name}</TableCell>
+												<TableCell>{task.duration}</TableCell>
 											</TableRow>
 									  ))
 									: ""}

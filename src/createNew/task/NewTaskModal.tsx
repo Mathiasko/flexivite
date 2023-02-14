@@ -7,7 +7,7 @@ import { CREATE_TASK, TASKS_BY_CATEGORY } from "../../queries.js";
 export function NewTaskModal({ setTaskModal, taskCategoryId }) {
 	const [open, setOpen] = useState(true);
 	const [taskForm, setTaskForm] = useState({
-		name: '',
+		name: "",
 		duration: 0,
 	});
 
@@ -64,7 +64,7 @@ export function NewTaskModal({ setTaskModal, taskCategoryId }) {
 						label="Task Name"
 						placeholder="Task Name"
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setTaskForm({ name: e.target.value });
+							setTaskForm({ ...taskForm, name: e.target.value });
 						}}
 					/>
 					<TextField
@@ -75,7 +75,7 @@ export function NewTaskModal({ setTaskModal, taskCategoryId }) {
 						label="Duration"
 						placeholder="Duration"
 						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setTaskForm({ duration: e.target.value });
+							setTaskForm({ ...taskForm, duration: parseInt(e.target.value) });
 						}}
 					/>
 					<Button

@@ -415,8 +415,8 @@ export const CREATE_TASK = gql`
 	mutation createTask(
 		$name: String!
 		$fkTaskCategory: String!
-		$fkProductCategoryId: String!
-		$duration: number!
+		$fkProductCategoryId: String
+		$duration: Int!
 	) {
 		createTask(
 			input: {
@@ -458,6 +458,10 @@ export const TASKS_BY_CATEGORY = gql`
 		taskByCategory(categoryId: $categoryId) {
 			id
 			name
+			taskCategory {
+				name
+			}
+			duration
 		}
 	}
 `;
