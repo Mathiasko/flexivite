@@ -27,6 +27,7 @@ export const RepairSummary = () => {
 	const productCart: { product: productInterface; amount: number }[] = useStore(
 		(state) => state.productCart
 	);
+	const toggleModal = useStore((state) => state.toggleModal);
 	const signedIn = useStore((state) => state.signedIn);
 	const selectedCustomer: CustomerInterface = useStore((state) => state.selectedCustomer);
 	const selectedBicycle: bicycleInterface = useStore((state) => state.selectedBicycle);
@@ -75,11 +76,23 @@ export const RepairSummary = () => {
 			})
 			.then(() => {
 				emptyStore();
+				toggleModal();
 			})
 			.catch((err) => {
 				console.error(err);
 			});
 	}
+
+	const totalPriceTask = taskCart.reduce((acc, obj) => {
+		return acc + obj.duration * 200;
+	}, 0);
+
+	const totalPriceProd = productCart.reduce((acc, obj) => {
+		return acc + obj.product.sellPrice * obj.amount;
+	}, 0);
+
+	console.log("totalPriceTask", totalPriceTask);
+	console.log("totalPriceProd", totalPriceProd);
 
 	return (
 		<Box>
@@ -100,7 +113,7 @@ export const RepairSummary = () => {
 					placeholder="Ved uz nieco napis"
 					variant="outlined"
 					rows={4}
-          sx={{margin: '15px'}}
+					sx={{ margin: "15px" }}
 					margin={"dense"}
 					multiline
 					onChange={({ target }) => setComment(target.value)}

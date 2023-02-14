@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 const store = (set) => ({
-	signedIn: { id: "30976797-115a-4ebb-9864-25412323ccf4", name: "Matus Laco" },
+	signedIn: { id: "0e066280-a88e-44b5-ab6c-2598bda9bf00", name: "maros" },
 	selectedBicycle: undefined,
 	selectedCustomer: undefined,
 	selectedRepair: undefined,
@@ -21,6 +21,8 @@ const store = (set) => ({
 	modal: false,
 	modalContent: {},
 
+	signIn: (employee) => set(() => ({ signedIn: employee })),
+	logOut: () => set(() => ({ signedIn: undefined })),
 	toggleModal: () => {
 		set((state) => ({
 			modal: !state.modal,
@@ -105,7 +107,7 @@ const store = (set) => ({
 	removeBicycleFromCart: (id) =>
 		set(({ bicycleCart }) => {
 			return {
-				bicycleCart: bicycleCart.filter(({bicycle}) => {
+				bicycleCart: bicycleCart.filter(({ bicycle }) => {
 					return bicycle.id !== id;
 				}),
 			};
@@ -143,7 +145,6 @@ const store = (set) => ({
 				}),
 			};
 		}),
-	signIn: (employee) => set((state) => ({ ...state, signedIn: employee })),
 	storeBicycleProps: (props) => set((state) => ({ ...state, bicycleProps: props })),
 	storeTaskProps: (props) => set((state) => ({ ...state, taskProps: props })),
 	storeProduceProps: (props) => set((state) => ({ ...state, productProps: props })),

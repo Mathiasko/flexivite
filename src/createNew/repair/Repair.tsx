@@ -17,20 +17,13 @@ export default function Repair() {
 
 	const handleNext = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep + 1);
-		setNextDisabled(true);
 	};
 
 	const handleBack = () => {
 		setActiveStep((prevActiveStep) => prevActiveStep - 1);
 	};
 
-	const [nextDisabled, setNextDisabled] = useState(true);
-
-	const stepContents = [
-		<SelectCustomerBike setNextDisabled={setNextDisabled} />,
-		<SelectTaskParts setNextDisabled={setNextDisabled} />,
-		<RepairSummary />,
-	];
+	const stepContents = [<SelectCustomerBike />, <SelectTaskParts />, <RepairSummary />];
 
 	return (
 		<Box>
@@ -68,7 +61,7 @@ export default function Repair() {
 								sx={{ mr: 1 }}>
 								Back
 							</Button>
-							<Button onClick={handleNext} disabled={nextDisabled}>
+							<Button onClick={handleNext}>
 								{activeStep === steps.length - 1 ? "Finish" : "Next"}
 							</Button>
 						</Box>

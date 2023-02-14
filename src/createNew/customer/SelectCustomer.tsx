@@ -15,7 +15,7 @@ import { CustomerInterface } from "../../Interfaces.js";
 import { GET_CUSTOMER } from "../../queries.js";
 import { useStore } from "../../Store.js";
 import AddCircleOutlineRoundedIcon from "@mui/icons-material/AddCircleOutlineRounded";
-import { NewCustomerModal } from "../customer/NewCustomerModal.js";
+import { NewCustomerModal } from "./NewCustomerModal.js";
 interface searchCustomerInterface {
 	setCustomers: React.Dispatch<React.SetStateAction<CustomerInterface[] | undefined>>;
 }

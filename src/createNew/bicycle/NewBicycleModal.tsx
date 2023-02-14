@@ -1,38 +1,37 @@
-//@ts-nocheck
 import React, { useState } from "react";
-import {
-	Autocomplete,
-	Box,
-	Button,
-	CircularProgress,
-	Modal,
-	TextField,
-	Typography,
-} from "@mui/material";
-import { useMutation, useQuery } from "@apollo/client";
-import { GET_BICYCLES, GET_BICYCLE_PROPS, NEW_BICYCLE } from "../../queries";
+import { Box, Button, CircularProgress, Modal, Typography } from "@mui/material";
+import { useMutation } from "@apollo/client";
+import { GET_BICYCLES, NEW_BICYCLE } from "../../queries";
 import { useStore } from "../../Store.js";
+import { useForm } from "@mantine/form";
+import { TextInput, Select } from "@mantine/core";
+import { BicyclePropInterface } from "../../Interfaces";
 
 export function NewBicycleModal({ setModal }) {
 	const [open, setOpen] = useState(true);
-	const [bicycleForm, setBicycleForm] = useState({});
 	const selectedCustomer = useStore((state: any) => state.selectedCustomer);
-	const storeBicycleProps = useStore((state: any) => state.storeBicycleProps);
-	const { data: bicycleProps } = useQuery(GET_BICYCLE_PROPS);
+	const bicycleProps = useStore((state: any) => state.bicycleProps);
 	const [createBicycle, { data, loading }] = useMutation(NEW_BICYCLE, {
 		refetchQueries: [{ query: GET_BICYCLES, variables: { customerId: selectedCustomer?.id } }],
 	});
-
-	const { color, frameNumber, type, brand, gearsystem, status, tires } = bicycleForm;
-
-	bicycleProps?.bicycleProps ? storeBicycleProps(bicycleProps.bicycleProps) : "";
+	const form = useForm({ initialValues: {} });
 
 	const handleClose = () => {
 		setModal(false);
 	};
 	const selectBicycle = useStore((state: any) => state.selectBicycle);
 
-	function handleBicycleSubmit() {
+	function handleBicycleSubmit({
+		color,
+		frameNumber,
+		type,
+		brand,
+		gearsystem,
+		status,
+		tires,
+	}: BicyclePropInterface) {
+		console.log(color, frameNumber, type, brand, gearsystem, status, tires);
+
 		createBicycle({
 			variables: {
 				color,
@@ -56,25 +55,25 @@ export function NewBicycleModal({ setModal }) {
 
 	data && !loading ? setModal(false) : "";
 
-	const colorOptions = bicycleProps?.bicycleProps.color.map((color) => ({
+	const colorOptions = bicycleProps.color.map((color) => ({
 		label: color.value,
-		id: color.id,
+		value: color.id,
 	}));
-	const tiresOptions = bicycleProps?.bicycleProps.tires.map((tire) => ({
+	const tiresOptions = bicycleProps.tires.map((tire) => ({
 		label: tire.value,
-		id: tire.id,
+		value: tire.id,
 	}));
-	const statusOptions = bicycleProps?.bicycleProps.status.map((status) => ({
+	const statusOptions = bicycleProps.status.map((status) => ({
 		label: status.value,
-		id: status.id,
+		value: status.id,
 	}));
-	const gearsystemOptions = bicycleProps?.bicycleProps.gearsystem.map((gearsystem) => ({
+	const gearsystemOptions = bicycleProps.gearsystem.map((gearsystem) => ({
 		label: gearsystem.value,
-		id: gearsystem.id,
+		value: gearsystem.id,
 	}));
-	const brandOptions = bicycleProps?.bicycleProps.brand.map((brand) => ({
-		id: brand.id,
+	const brandOptions = bicycleProps.brand.map((brand) => ({
 		label: brand.value,
+		value: brand.id,
 	}));
 
 	const style = {
@@ -96,86 +95,57 @@ export function NewBicycleModal({ setModal }) {
 				<Typography mb={1} variant="h4">
 					Create new Bicycle
 				</Typography>
-				<form className="flex flex-col">
-					<Autocomplete
-						disablePortal
-						options={brandOptions}
-						renderOption={(props, option) => {
-							return <Box {...props}>{option.label}</Box>;
-						}}
-						sx={{ width: 300, mb: 2 }}
-						onChange={(event: any, value: string | null) => {
-							setBicycleForm({ ...bicycleForm, brand: value.id });
-						}}
-						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Brand" />}
+				<form
+					className="flex flex-col"
+					onSubmit={form.onSubmit((values) => handleBicycleSubmit(values))}>
+					<TextInput label="FrameNumber" {...form.getInputProps("frameNumber")} />
+					<Select
+						label="Brand name"
+						placeholder="Pick one"
+						size="md"
+						searchable
+						nothingFound="No options"
+						data={brandOptions}
+						{...form.getInputProps("brand")}
 					/>
-					<TextField
-						sx={{ mb: 2 }}
-						variant={"outlined"}
-						label="Type"
-						placeholder="Type"
-						value={bicycleForm.type}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-							setBicycleForm({ ...bicycleForm, type: e.target.value });
-						}}
+					<TextInput label="Type" {...form.getInputProps("type")} />
+					<Select
+						label="Color"
+						placeholder="Pick one"
+						size="md"
+						searchable
+						nothingFound="No options"
+						data={colorOptions}
+						{...form.getInputProps("color")}
 					/>
-					<Autocomplete
-						disablePortal
-						options={colorOptions}
-						renderOption={(props, option) => {
-							return <Box {...props}>{option.label}</Box>;
-						}}
-						sx={{ width: 300, mb: 2 }}
-						onChange={(event: any, value: { id: string; label: string } | null) => {
-							setBicycleForm({ ...bicycleForm, color: value.id });
-						}}
-						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Color" />}
+					<Select
+						label="Tire size"
+						placeholder="Pick one"
+						size="md"
+						searchable
+						nothingFound="No options"
+						data={tiresOptions}
+						{...form.getInputProps("tires")}
 					/>
-					<Autocomplete
-						disablePortal
-						options={tiresOptions}
-						renderOption={(props, option) => {
-							return <Box {...props}>{option.label}</Box>;
-						}}
-						sx={{ width: 300, mb: 2 }}
-						onChange={(event: any, value: string | null) => {
-							setBicycleForm({ ...bicycleForm, tires: value.id });
-						}}
-						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Tires" />}
+					<Select
+						label="Gear system"
+						placeholder="Pick one"
+						size="md"
+						searchable
+						nothingFound="No options"
+						data={gearsystemOptions}
+						{...form.getInputProps("gearsystem")}
 					/>
-					<Autocomplete
-						disablePortal
-						options={statusOptions}
-						renderOption={(props, option) => {
-							return <Box {...props}>{option.label}</Box>;
-						}}
-						sx={{ width: 300, mb: 2 }}
-						onChange={(event: any, value: string | null) => {
-							setBicycleForm({ ...bicycleForm, status: value.id });
-						}}
-						renderInput={(props) => <TextField variant={"outlined"} {...props} label="Status" />}
+					<Select
+						label="Status"
+						placeholder="Pick one"
+						size="md"
+						searchable
+						nothingFound="No options"
+						data={statusOptions}
+						{...form.getInputProps("status")}
 					/>
-					<Autocomplete
-						disablePortal
-						options={gearsystemOptions}
-						renderOption={(props, option) => {
-							return <Box {...props}>{option.label}</Box>;
-						}}
-						sx={{ width: 300, mb: 2 }}
-						onChange={(event: any, value: string | null) => {
-							setBicycleForm({ ...bicycleForm, gearsystem: value.id });
-						}}
-						renderInput={(props) => (
-							<TextField variant={"outlined"} {...props} label="Gearsystem" />
-						)}
-					/>
-					<Button
-						variant="outlined"
-						color="primary"
-						size="large"
-						onClick={() => {
-							handleBicycleSubmit();
-						}}>
+					<Button variant="outlined" color="primary" size="large" type="submit">
 						Submit
 						{loading && (
 							<CircularProgress

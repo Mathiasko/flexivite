@@ -1,9 +1,9 @@
 import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material";
 import React, { useState } from "react";
-import { ProductCart } from "../common/ProductCart";
-import { Products } from "../common/Products";
-import { SearchProducts } from "../common/SearchProducts";
-import { SelectCustomer } from "../common/SelectCustomer";
+import { ProductCart } from "../product/ProductCart";
+import { Products } from "../product/Products";
+import { SearchProducts } from "../product/SearchProducts";
+import { SelectCustomer } from "../customer/SelectCustomer";
 import { SaleSummary } from "../sale/SaleSummary";
 import { BicycleCart } from "./BicycleCart";
 import { Bicycles } from "./Bicycles";

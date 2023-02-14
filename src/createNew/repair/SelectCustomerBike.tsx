@@ -1,16 +1,15 @@
 import { Grid } from "@mui/material";
-import { nextInterface } from "../../Interfaces";
-import { SelectBicycle } from "./SelectBicycle";
-import { SelectCustomer } from "../common/SelectCustomer";
+import { SelectBicycle } from "../bicycle/SelectBicycle";
+import { SelectCustomer } from "../customer/SelectCustomer";
 
-export const SelectCustomerBike = ({ setNextDisabled }: nextInterface) => {
+export const SelectCustomerBike = () => {
 	return (
 		<Grid container columns={2}>
 			<Grid minWidth={"max-conent"} item xs={1}>
 				<SelectCustomer />
 			</Grid>
 			<Grid minWidth={"max-conent"} item xs={1}>
-				<SelectBicycle setNextDisabled={setNextDisabled} />
+				<SelectBicycle />
 			</Grid>
 		</Grid>
 	);

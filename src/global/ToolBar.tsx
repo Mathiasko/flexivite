@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, List, ListItem, ListItemButton, ListItemText, Typography } from "@mui/material";
+import { Button, ListItemButton, ListItemText, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import { SearchBar } from "./SearchBar";
@@ -36,7 +36,7 @@ const CreateOptopns = ({ handleClose, hidden }: any) => {
 							handleClose();
 						}}
 						key={index}>
-						<ListItemText  primary={option.label} />
+						<ListItemText primary={option.label} />
 					</ListItemButton>
 				))}
 			</Box>
@@ -47,9 +47,9 @@ const CreateOptopns = ({ handleClose, hidden }: any) => {
 export const ToolBar = () => {
 	const location = useLocation();
 	const title = location.pathname;
+	const signedIn = useStore(({ signedIn }) => signedIn);
 
 	const [open, setOpen] = useState(false);
-	console.log("open", open);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -72,7 +72,11 @@ export const ToolBar = () => {
 			<SearchBar />
 
 			<div hidden={open}>
-				<Button variant="contained" sx={{ padding: "15px 20px" }} onClick={handleClickOpen}>
+				<Button
+					variant="contained"
+					disabled={!signedIn}
+					sx={{ padding: "15px 20px" }}
+					onClick={handleClickOpen}>
 					<AddCircleRoundedIcon /> <Typography marginLeft={1}>CREATE NEW</Typography>
 				</Button>
 			</div>

@@ -3,14 +3,13 @@ import React, { useState } from "react";
 import { useStore } from "../../Store.js";
 import { useLazyQuery } from "@apollo/client";
 import { TextField } from "@mui/material";
-import { GET_PRODUCTS_BY_CATEGORY, GET_TASKS_BY_NAME } from "../../queries";
+import { GET_TASKS_BY_NAME } from "../../queries";
 
 export const SearchTasks = () => {
-	const [searchProduct] = useLazyQuery(GET_PRODUCTS_BY_CATEGORY);
 	const [searchTask] = useLazyQuery(GET_TASKS_BY_NAME);
 	const storeTasks = useStore((state) => state.storeTasks);
-
 	const [taskName, setTaskName] = useState("");
+
 	function handleChange({ value }: HTMLInputElement) {
 		setTaskName(value);
 		searchTask({ variables: { name: taskName } })
@@ -24,6 +23,7 @@ export const SearchTasks = () => {
 
 	return (
 		<TextField
+			sx={{ padding: "0 10px" }}
 			autoFocus
 			variant={"outlined"}
 			placeholder="Search for Task"
